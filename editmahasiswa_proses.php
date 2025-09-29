@@ -9,7 +9,7 @@
     $password = $_POST['txt_password'];
     $foto_extention = "";
 
-	if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] == 0) {
+	if (isset($_FILES['img_gambar']) && $_FILES['img_gambar']['error'] == 0) {
         $sql = "SELECT foto_extention FROM mahasiswa WHERE nrp=?";
         $stmt = $con->prepare($sql);
         $stmt -> bind_param("s", $nrp);

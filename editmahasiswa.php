@@ -44,8 +44,7 @@
         <br>
         Tanggal Lahir: <input type="date" name="date_tanggal_lahir" value="<?php echo $tanggal_lahir; ?>"><br>
         Angkatan: <input type="text" name="txt_angkatan" value="<?php echo $angkatan; ?>"><br>
-		Gambar: <input type="file" name="gambar" accept="image/*"><br>
-        <input type="hidden" name="nrp_lama" value="<?php echo $NPK; ?>">
+		Gambar: <input type="file" name="img_gambar" accept="image/*"><br>
 		<input type="submit" name="submit" value="Edit Mahasiswa">
 	</form>
 </body>
