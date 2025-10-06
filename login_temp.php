@@ -1,3 +1,18 @@
+<?php
+    if(isset($_COOKIE['login'])){
+        header("Location: index.php");
+    }
+    else if(isset($_POST['loginAttempt'])){
+        echo "hai, buat cookienya";
+
+    }
+    else{
+        //kosongan biar default
+    }
+ 
+?>
+
+
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
@@ -95,12 +110,12 @@
 <body>
     <div class="login-container">
         <h2>LOGIN</h2>
-        <form action="proses.php" method="post">
+        <form action="" method="post">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Masuk</button>
+            <button type="submit" name="loginAttempt">Masuk</button>
         </form>
-        <a href="#">Daftar</a>
+        <!-- <a href="#">Daftar</a> --> //? Uncomment if registration is needed (user can register themselves)
     </div>
 </body>
 </html>
