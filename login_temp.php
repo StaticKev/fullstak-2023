@@ -1,21 +1,51 @@
 <?php
-    if(isset($_COOKIE['login'])){
-        header("Location: index.php");
-    }
-    else if(isset($_POST['loginAttempt'])){
-        echo "hai, buat cookienya";
+session_start();
 
+if (isset($_SESSION['login'])) {
+    header("Location: index.php");
+    exit();
+}
+
+if (isset($_POST['loginAttempt'])) {
+    require_once("conn.php");
+
+    // Prepare the SQL statement
+    $sql = "SELECT username, password, isadmin FROM akun WHERE username=?";
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("s", $_POST['username']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+
+    // Check if user exists
+    if ($user) {
+        $valid_username = $user['username'];
+        $valid_password = $user['password'];
+
+        // Verify password (ensure you hash passwords in production)
+        // password_verify($_POST['password'], $valid_password) //! HARUSNYA ADA INI
+        if ($_POST['username'] === $valid_username && $_POST['password'] === $valid_password) {
+            // Set session variables after successful login
+            $_SESSION['login'] = true;
+            $_SESSION['username'] = $valid_username;
+            $_SESSION['admin'] = $user['isadmin'];
+
+            header("Location: index.php");
+            exit();
+        } else {
+            echo "<script>alert('invalid username or password')</script>";
+        }
+    } else {
+        echo "<script>alert('user not found')</script>";
     }
-    else{
-        //kosongan biar default
-    }
- 
+}
 ?>
 
-
 <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
         body {
@@ -27,7 +57,6 @@
             font-family: 'Segoe UI', sans-serif;
             background: #111;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23333' stroke-width='1'%3E%3Cpath d='M20 0v40M0 20h40'/%3E%3C/g%3E%3C/svg%3E");
-            /* 👆 Simple doodle grid pattern */
             background-size: 40px 40px;
             color: #fff;
         }
@@ -39,7 +68,7 @@
             animation: glow 2s infinite alternate;
             width: 350px;
             text-align: center;
-            backdrop-filter: blur(6px); /* makes doodle look soft behind */
+            backdrop-filter: blur(6px);
         }
 
         @keyframes glow {
@@ -111,11 +140,12 @@
     <div class="login-container">
         <h2>LOGIN</h2>
         <form action="" method="post">
-            <input type="text" name="username" placeholder="Username" required>
+            <input type="text" name="username" placeholder="Username" required maxlength="7">
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit" name="loginAttempt">Masuk</button>
         </form>
-        <!-- <a href="#">Daftar</a> --> //? Uncomment if registration is needed (user can register themselves)
+        <!-- Uncomment if registration is needed -->
+        <!-- <a href="#">Daftar</a> -->
     </div>
 </body>
 </html>
