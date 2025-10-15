@@ -23,7 +23,7 @@ session_start();
 			<a href="tampilandosen.php"><button>LIST DOSEN</button></a><br><br>
 			<a href="insertmahasiswa.php"><button>TAMBAH MAHASISWA</button></a><br><br>
 			<a href="tampilanmahasiswa.php"><button>LIST MAHASISWA</button></a><br><br>
-			<a href="editPasswordAkun.php"><button>Ganti Password</button></a><br><br>
+			<a href="verifikasipassword.php"><button>Ganti Password</button></a><br><br>
 
 		
 		<?php }
