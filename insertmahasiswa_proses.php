@@ -23,7 +23,7 @@
 
 	if ($stmt) {
 		echo "Insert Sukses.";
-		$password = $_POST['txt_password']; 
+		$hashed_password = password_hash($_POST['txt_password'], PASSWORD_DEFAULT); 
 		$username = "M$nrp";
 		$nrp_mahasiswa = $nrp; 
 		$npk_dosen = NULL; 
@@ -32,7 +32,7 @@
 		$sqlAkun = "INSERT INTO akun(username, password, nrp_mahasiswa, npk_dosen, isadmin) 
 					VALUES (?, ?, ?, ?, ?)";
 		$stmtAkun = $con->prepare($sqlAkun);
-		$stmtAkun->bind_param("sssii", $username, $password, $nrp_mahasiswa, $npk_dosen, $isadmin);
+		$stmtAkun->bind_param("sssii", $username, $hashed_password, $nrp_mahasiswa, $npk_dosen, $isadmin);
 		$stmtAkun->execute();
 
 		if ($stmtAkun) {

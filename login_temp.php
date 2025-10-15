@@ -17,15 +17,14 @@ if (isset($_POST['loginAttempt'])) {
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
-    // Check if user exists
     if ($user) {
         $valid_username = $user['username'];
         $valid_password = $user['password'];
 
-        // Verify password (ensure you hash passwords in production)
-        // password_verify($_POST['password'], $valid_password) //! HARUSNYA ADA INI
-        if ($_POST['username'] === $valid_username && $_POST['password'] === $valid_password) {
-            // Set session variables after successful login
+        // Kalau belum ada user admin yang passwordnya sudah di hash, gunakan kondisi ini dulu
+        // if ($_POST['username'] === $valid_username && $_POST['password'] === $valid_password) {
+        
+        if ($_POST['username'] === $valid_username && password_verify($_POST['password'], $valid_password)) {
             $_SESSION['login'] = true;
             $_SESSION['username'] = $valid_username;
             $_SESSION['admin'] = $user['isadmin'];

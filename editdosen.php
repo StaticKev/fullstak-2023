@@ -3,7 +3,7 @@
 
     $npk = $_GET['npk'];
 
-    $sql = "SELECT d.nama, d.npk, a.password FROM dosen d INNER JOIN akun a ON d.npk = a.npk_dosen WHERE d.npk=?";
+    $sql = "SELECT d.nama, d.npk, d.foto_extension FROM dosen d WHERE d.npk=?";
     $stmt = $con->prepare($sql);
     $stmt->bind_param("s", $npk);
     $stmt->execute();
@@ -12,8 +12,10 @@
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
         $nama = $row['nama'];
-        $password = $row['password'];
         $NPK = $row['npk'];
+        $ext = $row['foto_extension'];
+
+        $gambar = "gambar/dosen/$NPK.$ext";
     } else {
         echo "Data dosen tidak ditemukan.";
         exit();
@@ -33,8 +35,8 @@
 	<form method="post" enctype="multipart/form-data" action="editdosen_proses.php">
 		Nama: <input type="text" name="txt_nama" value="<?php echo $nama; ?>"><br>
 		NPK: <input type="text" name="txt_npk" maxlength="6" value="<?php echo $NPK; ?>" readonly><br>
-		Password: <input type="text" name="txt_password" placeholder="buat password " value="<?php echo $password; ?>"><br>
 		Gambar: <input type="file" name="img_gambar" accept="image/*"><br>
+        <img src="<?php echo $gambar; ?>" width="100" height="100"><br>
 		<input type="submit" name="submit" value="Edit Dosen">
 	</form>
 </body>

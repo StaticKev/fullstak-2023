@@ -6,7 +6,6 @@
     $gender = $_POST['rad_gender'];
     $tanggal_lahir = $_POST['date_tanggal_lahir'];
     $angkatan = $_POST['txt_angkatan'];
-    $password = $_POST['txt_password'];
     $foto_extention = "";
 
 	if (isset($_FILES['img_gambar']) && $_FILES['img_gambar']['error'] == 0) {
@@ -47,11 +46,7 @@
     $stmt2 = $con->prepare($sql2);
     $stmt2 -> bind_param('ssssss', $nama, $gender, $tanggal_lahir, $angkatan, $foto_extention, $nrp);
 
-    $sql3 = "UPDATE akun SET password=? WHERE nrp_mahasiswa=?";
-    $stmt3 = $con->prepare($sql3);
-    $stmt3 -> bind_param('ss', $password, $nrp);
-
-	if ($stmt2->execute() && $stmt3->execute()) {   
+	if ($stmt2->execute()) {   
 		echo "Update Sukses.";
 	}
 	else {
