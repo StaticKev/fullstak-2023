@@ -32,6 +32,91 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Projek UTS - Edit Mahasiswa</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0e0e0e;
+            color: #fff;
+            font-family: "Segoe UI", sans-serif;
+            background-image: radial-gradient(circle at top left, #1c1c1c 0%, #000 80%);
+        }
+
+        form {
+            background: rgba(30, 30, 30, 0.95);
+            padding: 40px 50px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            width: 400px;
+            text-align: left;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="file"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 8px 0 20px 0;
+            border: none;
+            border-radius: 8px;
+            background: #1e1e1e;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="file"]:focus,
+        input[type="password"]:focus {
+            background: #2c2c2c;
+            box-shadow: 0 0 5px #00bcd4;
+        }
+
+        label, p {
+            font-weight: 600;
+            font-size: 15px;
+            color: #ddd;
+        }
+
+        input[type="radio"] {
+            margin-right: 5px;
+            transform: scale(1.1);
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(135deg, #00bcd4, #0097a7);
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.3s ease;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #0097a7, #00bcd4);
+        }
+
+        form br {
+            display: none;
+        }
+
+        form > *:not(:last-child) {
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
 	<form method="post" enctype="multipart/form-data" action="editmahasiswa_proses.php">

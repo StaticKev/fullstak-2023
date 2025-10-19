@@ -10,6 +10,7 @@
     $stmt->execute();
     $result = $stmt->get_result();
 
+    ob_start(); // mulai buffer output agar echo bisa ditaruh dalam <div>
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
         $nama = $row['nama'];
@@ -28,18 +29,66 @@
             if (file_exists($filePath)) {
                 unlink($filePath);
             }
-            echo "Mahasiswa $nama berhasil dihapus.<br>";
+            echo "<p class='success'>Mahasiswa <b>$nama</b> berhasil dihapus.</p>";
         } else {
-            echo "Gagal menghapus Mahasiswa $nama .<br>";
+            echo "<p class='error'>Gagal menghapus Mahasiswa <b>$nama</b>.</p>";
         }
     }
     else {
-        echo "Data mahasiswa dengan NPK $npk tidak ditemukan.";
+        echo "<p class='error'>Data mahasiswa dengan NRP $nrp tidak ditemukan.</p>";
         exit();
     }
 
-    echo "<a href='tampilanmahasiswa.php'>Kembali ke Tampilan Mahasiswa</a>";
+    echo "<a href='tampilanmahasiswa.php' class='back-btn'>Kembali ke Tampilan Mahasiswa</a>";
 
     $stmt->close();
     $con->close();
+
+    $content = ob_get_clean();
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hapus Mahasiswa</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #eee;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 60px;
+        }
+        .container {
+            background: #1f1f1f;
+            border-radius: 10px;
+            padding: 30px 50px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
+        }
+        .success { color: #eee; font-size: 1.2em; }
+        .error { color: #ff5252; font-size: 1.2em; }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: white;
+            background: #2196f3;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+        .back-btn:hover { background: #0d8bf2; }
+    </style>
+</head>
+<body>
+    <?php include('header.php'); ?> 
+    <div class="container">
+        <?= $content ?>
+    </div>
+</body>
+</html>
