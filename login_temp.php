@@ -140,7 +140,7 @@ if (isset($_POST['loginAttempt'])) {
     <div class="login-container">
         <h2>LOGIN</h2>
         <form action="" method="post">
-            <input type="text" name="username" placeholder="Username" required maxlength="7">
+            <input type="text" name="username" placeholder="Username" required maxlength="10">
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit" name="loginAttempt">Masuk</button>
         </form>
