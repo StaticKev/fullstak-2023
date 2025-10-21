@@ -3,7 +3,6 @@
 
     $npk = $_POST['txt_npk'];
     $nama = $_POST['txt_nama'];
-    $password = $_POST['txt_password'];
     $foto_extension = "";
 
 	if (isset($_FILES['img_gambar']) && $_FILES['img_gambar']['error'] == 0) {
@@ -44,11 +43,7 @@
     $stmt2 = $con->prepare($sql2);
     $stmt2 -> bind_param('sss', $nama, $foto_extension, $npk);
 
-    $sql3 = "UPDATE akun SET password=? WHERE npk_dosen=?";
-    $stmt3 = $con->prepare($sql3);
-    $stmt3 -> bind_param('ss', $password, $npk);
-
-	if ($stmt2->execute() && $stmt3->execute()) {   
+	if ($stmt2->execute()) {   
 		echo "Update Sukses.";
 	}
 	else {

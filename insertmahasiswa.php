@@ -9,7 +9,7 @@
 	<form method="post" enctype="multipart/form-data" action="insertmahasiswa_proses.php">
         NRP: <input type="text" maxlength="9" name="txt_nrp"><br>
         Nama: <input type="text" name="txt_nama"><br>
-        Password: <input type="text" name="txt_password" placeholder="buat password "><br>
+        Password: <input type="password" name="txt_password" placeholder="buat password "><br>
         Gender: 
         <input type="radio" name="rad_gender" value="Pria">Pria
         <input type="radio" name="rad_gender" value="Wanita">Wanita
