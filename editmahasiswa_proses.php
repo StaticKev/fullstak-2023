@@ -51,88 +51,13 @@
     $stmt3 = $con->prepare($sql3);
     $stmt3 -> bind_param('ss', $password, $nrp);
 
-	ob_start();
 	if ($stmt2->execute() && $stmt3->execute()) {   
-		echo "<p>Update Sukses.</p>";
+		echo "Update Sukses.";
 	}
 	else {
-		echo "<p>Update Gagal.</p>";
+		echo "Update Gagal.";
 	}
-	echo "<a href='tampilanmahasiswa.php'>Kembali ke tampilan Mahasiswa</a>";
-	$output = ob_get_clean();
+	echo "<br><a href='tampilanmahasiswa.php'>Kembali ke tampilan Mahasiswa</a>";
+	
 	$con->close();
 ?>
-
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Projek UTS - Proses Edit Mahasiswa</title>
-	<style>
-		body {
-			margin: 0;
-			height: 100vh;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			font-family: 'Segoe UI', sans-serif;
-			background: #111;
-			background-image: radial-gradient(circle at top left, #1c1c1c 0%, #000 80%);
-			color: #fff;
-		}
-
-		.result-box {
-			background: rgba(20, 20, 20, 0.9);
-			padding: 40px;
-			border-radius: 20px;
-			width: 400px;
-			text-align: center;
-			box-shadow: 0 0 16px #00bcd4;
-			backdrop-filter: blur(6px);
-			animation: glow 2s infinite alternate;
-		}
-
-		@keyframes glow {
-			0%   { box-shadow: 0 0 8px #00bcd4; }
-			50%  { box-shadow: 0 0 16px #0097a7; }
-			100% { box-shadow: 0 0 8px #00bcd4; }
-		}
-
-		h2 {
-			margin-bottom: 25px;
-			color: #00e5ff;
-			font-size: 26px;
-			letter-spacing: 2px;
-		}
-
-		p {
-			font-size: 18px;
-			margin: 15px 0;
-		}
-
-		a {
-			display: inline-block;
-			margin-top: 20px;
-			padding: 10px 20px;
-			background: linear-gradient(135deg, #00bcd4, #0097a7);
-			color: #fff;
-			font-weight: bold;
-			border-radius: 10px;
-			text-decoration: none;
-			transition: 0.3s;
-		}
-
-		a:hover {
-			transform: scale(1.05);
-			background: linear-gradient(135deg, #0097a7, #00bcd4);
-		}
-	</style>
-</head>
-<body>
-	<div class="result-box">
-		<h2>HASIL UPDATE MAHASISWA</h2>
-		<?php echo $output; ?>
-	</div>
-</body>
-</html>
