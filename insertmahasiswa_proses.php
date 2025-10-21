@@ -1,6 +1,6 @@
 <?php
 	require_once ("conn.php");
-
+	$message ="";
     $nrp = $_POST['txt_nrp'];
     $nama = $_POST['txt_nama'];
     $gender = $_POST['rad_gender'];
@@ -18,33 +18,62 @@
 
     $sql = "INSERT INTO mahasiswa (nrp, nama, gender, tanggal_lahir, angkatan, foto_extention) VALUES (?,?,?,?,?,?)";
     $stmt = $con->prepare($sql);
-	$stmt -> bind_param('ssssss', $nrp, $nama, $gender, $tanggal_lahir, $angkatan, $foto_extention);
-	$stmt -> execute();
+    $stmt->bind_param('ssssss', $nrp, $nama, $gender, $tanggal_lahir, $angkatan, $foto_extention);
+    $stmt->execute();
 
-	if ($stmt) {
-		echo "Insert Sukses.";
+    if ($stmt) {
+        $message =$message. "<p>✅ Insert data mahasiswa berhasil.</p>";
+
+        // Insert juga ke tabel akun
 		$hashed_password = password_hash($_POST['txt_password'], PASSWORD_DEFAULT); 
-		$username = "M$nrp";
-		$nrp_mahasiswa = $nrp; 
-		$npk_dosen = NULL; 
-		$isadmin = 0;
+        $username = "M$nrp";
+        $nrp_mahasiswa = $nrp;
+        $npk_dosen = NULL;
+        $isadmin = 0;
 
-		$sqlAkun = "INSERT INTO akun(username, password, nrp_mahasiswa, npk_dosen, isadmin) 
-					VALUES (?, ?, ?, ?, ?)";
-		$stmtAkun = $con->prepare($sqlAkun);
-		$stmtAkun->bind_param("sssii", $username, $hashed_password, $nrp_mahasiswa, $npk_dosen, $isadmin);
-		$stmtAkun->execute();
+        $sqlAkun = "INSERT INTO akun(username, password, nrp_mahasiswa, npk_dosen, isadmin) VALUES (?, ?, ?, ?, ?)";
+        $stmtAkun = $con->prepare($sqlAkun);
+        $stmtAkun->bind_param("sssii", $username, $hashed_password, $nrp_mahasiswa, $npk_dosen, $isadmin);
+        $stmtAkun->execute();
 
-		if ($stmtAkun) {
-			echo " Akun berhasil ditambahkan.";
-		} else {
-			echo " Gagal insert akun: " . $con->error;
-		}
-	}
-	else {
-		echo "Insert Gagal.";
-	}
-	echo "<br><a href='index.php'>Back to Index</a>";
-	
-	$con->close();
+        if ($stmtAkun) {
+            $message =$message. "<p>✅ Akun mahasiswa berhasil dibuat.</p>";
+        } else {
+            $message =$message. "<p>❌ Gagal membuat akun: " . htmlspecialchars($con->error) . "</p>";
+        }
+    } else {
+        $message .= "<p>❌ Gagal insert mahasiswa: " . htmlspecialchars($con->error) . "</p>";
+    }
+
+    $con->close();
+
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projek UTS - Insert Mahasiswa</title>
+<link rel="stylesheet" href="style.css">
+
+
+</head>
+<body>
+	<?php include('header.php'); ?> 
+	<div class="style">
+		<div class="container">
+			<h2>Confirm</h2>
+			<?php
+				if (!empty($message)) {
+					echo $message;
+					echo "<br><a href='index.php'>⬅ Kembali ke Home</a>";
+				} else {
+					echo "<p>Tidak ada data yang dikirim.</p>";
+					echo "<br><a href='index.php'>⬅ Kembali ke Home</a>";
+				}
+			?>
+		</div>
+	</div>
+</body>
+</html>

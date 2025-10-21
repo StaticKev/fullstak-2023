@@ -9,36 +9,41 @@ session_start();
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Home</title>
+	<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-	<?php
-		if(!isset($_SESSION['login'])){
-			header("Location: login_temp.php");
-		}
-		elseif ($_SESSION['admin'] == 1) {
-			echo "tampilan admin"; ?>
+	<div class="style">
 
-			<a href="insertdosen.php"> <button>TAMBAH DOSEN</button></a><br><br>
-			<a href="tampilandosen.php"><button>LIST DOSEN</button></a><br><br>
-			<a href="insertmahasiswa.php"><button>TAMBAH MAHASISWA</button></a><br><br>
-			<a href="tampilanmahasiswa.php"><button>LIST MAHASISWA</button></a><br><br>
-			<a href="editpassword.php"><button>Ganti Password</button></a><br><br>
+		<div class="container">
 
-		
-		<?php }
-		else{
-			echo "tampilan user"; 
-			echo $_SESSION['login']; 
-			echo $_SESSION['username']; 
-			echo $_SESSION['admin']; 
-			echo "tampilan user"; ?>
+			<?php
+			if (!isset($_SESSION['login'])) {
+				header("Location: login_temp.php");
+			} elseif ($_SESSION['admin'] == 1) {
+				echo "<h2>Selamat Datang Admin</h2>";
+			?>
+				<a href="insertdosen.php"><button>TAMBAH DOSEN</button></a>
+				<a href="tampilandosen.php"><button>LIST DOSEN</button></a>
+				<a href="insertmahasiswa.php"><button>TAMBAH MAHASISWA</button></a>
+				<a href="tampilanmahasiswa.php"><button>LIST MAHASISWA</button></a>
+				<a href="editPasswordAkun.php"><button>GANTI PASSWORD</button></a>
+				<a class="logout" href="logout.php">Logout</a>
 
 
-			<!-- tampilan user -->
 
-		<?php }
-	?>
+			<?php } else {
+				echo "<h2>Selamat Datang, " . htmlspecialchars($_SESSION['username']) . "</h2>"; ?>
+
+				<p>Anda login sebagai <strong>user</strong></p>
+				<a href="editPasswordAkun.php"><button>GANTI PASSWORD</button></a>
+				<!-- <a class="logout" href="logout.php">Logout</a> -->
+
+			<?php }
+			?>
+		</div>
+	</div>
+
 </body>
 
 </html>
