@@ -39,7 +39,7 @@
 			</select>
 		</form>
 		";
-
+		
 		//ambil total data
 		$sql = "SELECT * FROM mahasiswa";
 		$stmt = $con->prepare($sql);
@@ -59,27 +59,27 @@
 			$start = 0;
 		}
 
-		echo "<a href='index.php?p=1&cboPage=$perpage'>First</a> ";
+		echo "<a href='tampilanmahasiswa.php?p=1&cboPage=$perpage'>First</a> ";
 		if ($p==1) {
 			echo "Prev ";	
 		}
 		else {
 			$x = $p-1;
-			echo "<a href='index.php?p=$x&cboPage=$perpage'>Prev</a> ";
+			echo "<a href='tampilanmahasiswa.php?p=$x&cboPage=$perpage'>Prev</a> ";
 		}
 		
-		for($i =1; $i<= $totalpage; $i++) {
-			echo "<a href='index.php?p=$i&cboPage=$perpage'>$i</a> ";
+		for ($i = 1; $i <= $totalpage; $i++) {
+			echo "<a href='tampilanmahasiswa.php?p=$i&cboPage=$perpage'>$i</a> ";
 		}
 
-		if ($p==$totalpage) {
-			echo "Next ";	
+		if ($p == $totalpage) {
+			echo "Next ";
+		} else {
+			$x = $p + 1;
+			echo "<a href='tampilanmahasiswa.php?p=$x&cboPage=$perpage'>Next</a> ";
 		}
-		else {
-			$x = $p+1;
-			echo "<a href='index.php?p=$x&cboPage=$perpage'>Next</a> ";
-		}
-		echo "<a href='index.php?p=$totalpage&cboPage=$perpage'>Last</a> </div>";
+
+		echo "<a href='tampilanmahasiswa.php?p=$totalpage&cboPage=$perpage'>Last</a><br><br><br></div>";
 
 		$sql = "SELECT * FROM mahasiswa LIMIT ?,?";
 		$stmt = $con->prepare($sql);
