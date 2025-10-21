@@ -16,7 +16,7 @@ else {
         $sqlAkun = "INSERT INTO akun(username, password, isadmin) VALUES ('admin', ?, 1)";
         $stmtAkun = $con->prepare($sqlAkun);
         $stmtAkun->bind_param("s", $hashed_password);
-        @$stmtAkun->execute(); // pakai @ untuk suppress error
+        $stmtAkun->execute();
     }
 }
 

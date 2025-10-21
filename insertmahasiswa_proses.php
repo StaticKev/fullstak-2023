@@ -17,7 +17,7 @@
 	}
 
     // Cek apakah NPK sudah ada
-	$sql_check = "SELECT nrp FROM dosen WHERE nrp = ?";
+	$sql_check = "SELECT nrp FROM mahasiswa WHERE nrp = ?";
 	$stmt_check = $con->prepare($sql_check);
 	$stmt_check->bind_param("s", $npk);
 	$stmt_check->execute();

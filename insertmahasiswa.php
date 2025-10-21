@@ -19,7 +19,7 @@
 				<input type="text" name="txt_nama" id="txt_nama">
 
 				<label>Password:</label>
-				<input type="text" name="txt_password" placeholder="buat password"required>
+				<input type="password" name="txt_password" placeholder="buat password"required>
 
 				<label>Gender:</label><br>
 				<div style="display: flex; gap: 20px; align-items: center;">

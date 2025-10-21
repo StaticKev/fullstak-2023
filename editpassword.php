@@ -43,7 +43,9 @@
                     </script>";
             }
         } else {
-            echo "Password salah!";
+                echo "<script>
+                        alert('Password salah!');
+                    </script>";
         }
     }
 ?>
