@@ -22,9 +22,9 @@ if (isset($_POST['loginAttempt'])) {
         $valid_password = $user['password'];
 
         // Kalau belum ada user admin yang passwordnya sudah di hash, gunakan kondisi ini dulu
-        // if ($_POST['username'] === $valid_username && $_POST['password'] === $valid_password) {
+        if ($_POST['username'] === $valid_username && $_POST['password'] === $valid_password) {
         
-        if ($_POST['username'] === $valid_username && password_verify($_POST['password'], $valid_password)) {
+        // if ($_POST['username'] === $valid_username && password_verify($_POST['password'], $valid_password)) {
             $_SESSION['login'] = true;
             $_SESSION['username'] = $valid_username;
             $_SESSION['admin'] = $user['isadmin'];
@@ -139,7 +139,7 @@ if (isset($_POST['loginAttempt'])) {
     <div class="login-container">
         <h2>LOGIN</h2>
         <form action="" method="post">
-            <input type="text" name="username" placeholder="Username" required maxlength="7">
+            <input type="text" name="username" placeholder="Username" required maxlength="10">
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit" name="loginAttempt">Masuk</button>
         </form>

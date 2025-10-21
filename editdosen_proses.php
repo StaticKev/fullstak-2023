@@ -20,7 +20,7 @@
             unlink($gambar_old); 
             echo "File berhasil dihapus.";
         } else {
-            echo "File tidak ditemukan.";
+            echo "Gambar lama tidak ada.";
         }
 
 		$gambar = $_FILES['img_gambar'];
