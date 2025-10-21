@@ -29,6 +29,22 @@
 		$foto_extention = $ext;
 	}
 
+	// Cek apakah NPK sudah ada
+	$sql_check = "SELECT npk FROM dosen WHERE npk = ?";
+	$stmt_check = $con->prepare($sql_check);
+	$stmt_check->bind_param("s", $npk);
+	$stmt_check->execute();
+	$result = $stmt_check->get_result();
+
+	if ($result->num_rows > 0) {
+		// NPK sudah ada → tampilkan alert dan kembali ke form
+		echo "<script>
+				alert('NPK sudah terdaftar!');
+				window.location.href = 'insertdosen.php';
+			</script>";
+		exit();
+	}
+
 
 	$sql = "INSERT INTO dosen(npk, nama, foto_extension) VALUES(?,?,?)";
 	$stmt = $con->prepare($sql);
@@ -61,7 +77,7 @@
 	else {
 		echo "<p class='error'>Insert Gagal.</p>";
 	}
-	echo "<a href='index.php' class='back-btn'>Kembali ke Index</a>";
+	echo "<a href='index.php' class='back-btn'>Kembali ke Home</a>";
 
 	$con->close();
 	?>

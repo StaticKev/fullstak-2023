@@ -16,6 +16,22 @@
 		$foto_extention = $ext;
 	}
 
+    // Cek apakah NPK sudah ada
+	$sql_check = "SELECT nrp FROM dosen WHERE nrp = ?";
+	$stmt_check = $con->prepare($sql_check);
+	$stmt_check->bind_param("s", $npk);
+	$stmt_check->execute();
+	$result = $stmt_check->get_result();
+
+	if ($result->num_rows > 0) {
+		// NRP sudah ada → tampilkan alert dan kembali ke form
+		echo "<script>
+				alert('NRP sudah terdaftar!');
+				window.location.href = 'insertmahasiswa.php';
+			</script>";
+		exit();
+	}
+
     $sql = "INSERT INTO mahasiswa (nrp, nama, gender, tanggal_lahir, angkatan, foto_extention) VALUES (?,?,?,?,?,?)";
     $stmt = $con->prepare($sql);
     $stmt->bind_param('ssssss', $nrp, $nama, $gender, $tanggal_lahir, $angkatan, $foto_extention);

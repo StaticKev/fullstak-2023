@@ -29,12 +29,18 @@
                 $stmt = $con->prepare($sql2);
                 $stmt -> bind_param("ss", $newPassword, $username);
                 if ($stmt -> execute()) {
-                    echo "Update password berhasil!";
+                    echo "<script>
+                        alert('Update password berhasil!');
+                    </script>";
                 } else {
-                    echo "Update password gagal!";
+                    echo "<script>
+                        alert('Update password gagal!');
+                    </script>";
                 }
             } else {
-                echo "Password baru yang dimasukkan tidak cocok!";
+                echo "<script>
+                        alert('Password baru yang dimasukkan tidak cocok!');
+                    </script>";
             }
         } else {
             echo "Password salah!";
@@ -48,16 +54,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Change Account Password</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
 
 <body>
-    <form action="" method="post">
-        Username: <input type="text" name="username" value="<?php echo $username?>" readonly><br>
-        Masukkan password saat ini: <input type="password" name="currentPassword"><br><br>
-        Password Baru<br>
-        Password: <input type="password" name="newPassword1"><br>
-        Masukkan password kembali: <input type="password" name="newPassword2"><br> 
-        <input type="submit" value="Ubah" name="btnSubmit">
-    </form>
+    <div class="style">
+        <div class="container">
+            <h2>Ubah Password</h2>
+            <form action="" method="post">
+                <label>Username:</label>
+                <input type="text" name="username" value="<?php echo htmlspecialchars($username); ?>" readonly>
+
+                <label>Password Saat Ini:</label>
+                <input type="password" name="currentPassword" required>
+
+                <label>Password Baru:</label>
+                <input type="password" name="newPassword1" required>
+
+                <label>Ulangi Password Baru:</label>
+                <input type="password" name="newPassword2" required>
+
+                <input type="submit" value="Ubah Password" name="btnSubmit">
+            </form>
+            <a href="index.php" class="back-btn">⬅ Kembali ke Home</a>
+        </div>
+    </div>
 </body>
 </html>
