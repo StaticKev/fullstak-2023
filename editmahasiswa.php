@@ -33,20 +33,25 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Projek UTS - Edit Mahasiswa</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<form method="post" enctype="multipart/form-data" action="editmahasiswa_proses.php">
-		Nama: <input type="text" name="txt_nama" value="<?php echo $nama; ?>"><br>
-		NRP: <input type="text" name="txt_nrp" maxlength="9" value="<?php echo $NRP; ?>" readonly><br>
-        Gender: 
-        <input type="radio" name="rad_gender" value="Pria" <?php if($gender == "Pria") echo "checked"; ?>>Pria
-        <input type="radio" name="rad_gender" value="Wanita" <?php if($gender == "Wanita") echo "checked"; ?>>Wanita
-        <br>
-        Tanggal Lahir: <input type="date" name="date_tanggal_lahir" value="<?php echo $tanggal_lahir; ?>"><br>
-        Angkatan: <input type="text" name="txt_angkatan" value="<?php echo $angkatan; ?>"><br>
-		Gambar: <input type="file" name="img_gambar" accept="image/*"><br>
-        <img src="<?php echo $gambar; ?>" width="100" height="100"><br>
-		<input type="submit" name="submit" value="Edit Mahasiswa">
-	</form>
+    <div class="style">
+        <div class="container">
+            <form method="post" enctype="multipart/form-data" action="editmahasiswa_proses.php">
+                Nama: <input type="text" name="txt_nama" value="<?php echo $nama; ?>"><br>
+                NRP: <input type="text" name="txt_nrp" maxlength="9" value="<?php echo $NRP; ?>" readonly><br>
+                Gender: 
+                <input type="radio" name="rad_gender" value="Pria" <?php if($gender == "Pria") echo "checked"; ?>>Pria
+                <input type="radio" name="rad_gender" value="Wanita" <?php if($gender == "Wanita") echo "checked"; ?>>Wanita
+                <br>
+                Tanggal Lahir: <input type="date" name="date_tanggal_lahir" value="<?php echo $tanggal_lahir; ?>"><br>
+                Angkatan: <input type="text" name="txt_angkatan" value="<?php echo $angkatan; ?>"><br>
+                Gambar: <input type="file" name="img_gambar" accept="image/*"><br>
+                <img src="<?php echo $gambar; ?>" width="100" height="100" alt="profile"><br>
+                <input type="submit" name="submit" value="Edit Mahasiswa">
+            </form>
+        </div>
+    </div>
 </body>
 </html>

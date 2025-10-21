@@ -1,13 +1,26 @@
 <?php
 session_start();
+require_once("conn.php");
+
 
 if (isset($_SESSION['login'])) {
     header("Location: index.php");
     exit();
 }
+else {    
+    $cek = $con->query("SELECT 1 FROM akun WHERE username = 'admin' LIMIT 1");
+
+    if ($cek && $cek->num_rows === 0) {
+        // Kalau belum ada, baru insert
+        $hashed_password = password_hash('password', PASSWORD_DEFAULT);
+        $sqlAkun = "INSERT INTO akun(username, password, isadmin) VALUES ('admin', ?, 1)";
+        $stmtAkun = $con->prepare($sqlAkun);
+        $stmtAkun->bind_param("s", $hashed_password);
+        @$stmtAkun->execute(); // pakai @ untuk suppress error
+    }
+}
 
 if (isset($_POST['loginAttempt'])) {
-    require_once("conn.php");
 
     // Prepare the SQL statement
     $sql = "SELECT username, password, isadmin FROM akun WHERE username=?";
@@ -22,9 +35,9 @@ if (isset($_POST['loginAttempt'])) {
         $valid_password = $user['password'];
 
         // Kalau belum ada user admin yang passwordnya sudah di hash, gunakan kondisi ini dulu
-        if ($_POST['username'] === $valid_username && $_POST['password'] === $valid_password) {
+        // if ($_POST['username'] === $valid_username && $_POST['password'] === $valid_password) {
         
-        // if ($_POST['username'] === $valid_username && password_verify($_POST['password'], $valid_password)) {
+        if ($_POST['username'] === $valid_username && password_verify($_POST['password'], $valid_password)) {
             $_SESSION['login'] = true;
             $_SESSION['username'] = $valid_username;
             $_SESSION['admin'] = $user['isadmin'];

@@ -7,32 +7,7 @@
 	<title>Insert Dosen</title>
 	<link rel="stylesheet" href="style.css">
 	<style>
-		.success {
-			color: #eee;
-			font-size: 1.1em;
-			margin-bottom: 10px;
-		}
 
-		.error {
-			color: #ff5252;
-			font-size: 1.1em;
-			margin-bottom: 10px;
-		}
-
-		.back-btn {
-			display: inline-block;
-			margin-top: 15px;
-			text-decoration: none;
-			color: white;
-			background: #2196f3;
-			padding: 10px 20px;
-			border-radius: 6px;
-			transition: 0.2s;
-		}
-
-		.back-btn:hover {
-			background: #0d8bf2;
-		}
 	</style>
 </head>
 
@@ -75,21 +50,23 @@
 
 		<div class="style">
 			<div class="container">
-			<?php
-			if ($stmtAkun) {
-				echo "<p class='success'>Akun dosen <b>$nama</b> berhasil ditambahkan.</p>";
-			} else {
-				echo "<p class='error'>Gagal insert akun: " . $con->error . "</p>";
-			}
-		} else {
-			echo "<p class='error'>Insert Gagal.</p>";
-		}
-		echo "<a href='index.php' class='back-btn'>Kembali ke Index</a>";
 
-		$con->close();
-			?>
-			</div>
+		<?php
+		if ($stmtAkun) {
+			echo "<p class='success'>Akun dosen <b>$nama</b> berhasil ditambahkan.</p>";
+		} else {
+			echo "<p class='error'>Gagal insert akun: " . $con->error . "</p>";
+		}
+	} 
+	else {
+		echo "<p class='error'>Insert Gagal.</p>";
+	}
+	echo "<a href='index.php' class='back-btn'>Kembali ke Index</a>";
+
+	$con->close();
+	?>
 		</div>
+	</div>
 
 </body>
 
