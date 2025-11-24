@@ -1,13 +1,10 @@
 <?php
-    require_once ("conn.php");
+    require_once ("service/dosen.php");
+    $objDosen = new dosen();
 
     $npk = $_GET['npk'];
 
-    $sql = "SELECT d.nama, d.npk, d.foto_extension FROM dosen d WHERE d.npk=?";
-    $stmt = $con->prepare($sql);
-    $stmt->bind_param("s", $npk);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $result = $objDosen->getAllDosen($npk);
 
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
@@ -20,8 +17,6 @@
         echo "Data dosen tidak ditemukan.";
         exit();
     }
-    $stmt->close();
-    $con->close();
 ?>
 
 <!DOCTYPE html>

@@ -1,5 +1,6 @@
 <?php
-    require_once ("conn.php");
+    require_once ("service/akun.php");
+    $objAkun = new akun();
 
     session_start();
 
@@ -15,20 +16,11 @@
         $newPassword2 = $_POST['newPassword2'];
         $newPassword = password_hash($newPassword1, PASSWORD_DEFAULT);
 
-        $sql = "SELECT password FROM akun WHERE username = ?";
-        $stmt = $con->prepare($sql);
-        $stmt -> bind_param("s", $username);
-        $stmt -> execute();
-        $stmt -> bind_result($storedPassword);
-        $stmt -> fetch();
-        $stmt -> close();
+        $storedPassword = $objAkun->getPassword($username);
 
         if (password_verify($currentPassword, $storedPassword)) {
             if ($newPassword1 === $newPassword2) {
-                $sql2 = "UPDATE akun SET password = ? WHERE username = ?";
-                $stmt = $con->prepare($sql2);
-                $stmt -> bind_param("ss", $newPassword, $username);
-                if ($stmt -> execute()) {
+                if ($objAkun->changePwd($username, $newPassword)) {
                     echo "<script>
                         alert('Update password berhasil!');
                     </script>";

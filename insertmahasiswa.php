@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if($_SESSION['admin'] == 0) {
+	require_once ('service/404.php');
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>

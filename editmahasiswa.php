@@ -1,13 +1,10 @@
 <?php
-    require_once ("conn.php");
+    require_once ("service/mahasiswa.php");
+    $objMahasiswa = new mahasiswa();
 
     $nrp = $_GET['nrp'];
 
-    $sql = "SELECT m.nrp, m.nama, m.gender, m.tanggal_lahir, m.angkatan, m.foto_extention, a.password FROM mahasiswa m INNER JOIN akun a ON m.nrp = a.nrp_mahasiswa WHERE m.nrp=?";
-    $stmt = $con->prepare($sql);
-    $stmt->bind_param("s", $nrp);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $result = $objMahasiswa->getAllMahasiswa($nrp);
 
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
@@ -23,8 +20,6 @@
         echo "Data mahasiswa tidak ditemukan.";
         exit();
     }
-    $stmt->close();
-    $con->close();
 ?>
 
 <!DOCTYPE html>

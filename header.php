@@ -1,14 +1,10 @@
-<?php
-session_start();
-?>
-
 <style>
     .navbar {
         background: rgba(20, 20, 20, 0.9);
         backdrop-filter: blur(8px);
         padding: 20px 0;
         display: flex;
-        justify-content: center; /* 🔹 bikin konten di tengah */
+        justify-content: center;
         align-items: center;
         position: sticky;
         top: 0;
@@ -26,7 +22,7 @@ session_start();
     .navbar a {
         color: #fff;
         text-decoration: none;
-        margin: 0 25px; /* 🔹 jarak antar link diperlebar */
+        margin: 0 25px; 
         font-family: 'Segoe UI', sans-serif;
         font-size: 18px;
         letter-spacing: 1px;

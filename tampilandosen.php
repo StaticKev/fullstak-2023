@@ -1,3 +1,14 @@
+<?php
+session_start();
+include('service/dosen.php');
+$objDosen = new dosen();
+
+if($_SESSION['admin'] == 0) {
+	require_once ('service/404.php');
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -21,7 +32,6 @@
 		</div>
 
 		<?php
-		require_once("conn.php");
 
 		if (isset($_GET['cboPage'])) {
 			$perpage = $_GET['cboPage'];
@@ -43,12 +53,7 @@
 		";
 		
 		//ambil total data
-		$sql = "SELECT * FROM dosen";
-		$stmt = $con->prepare($sql);
-		$stmt->execute();
-		$result = $stmt->get_result();
-
-		$jumlahData = $result->num_rows;
+		$jumlahData = $objDosen->getAllDosen();
 		//set total hlm
 		$totalpage = ceil($jumlahData / $perpage);
 
@@ -83,12 +88,7 @@
 
 		echo "<a href='tampilandosen.php?p=$totalpage&cboPage=$perpage'>Last</a><br><br><br></div>";
 
-		$sql = "SELECT * FROM dosen LIMIT ?,?";
-		$stmt = $con->prepare($sql);
-		$stmt->bind_param("ii", $start, $perpage);
-		$stmt->execute();
-
-		$result = $stmt->get_result();
+		$result = $objDosen->getDosenLimit($start, $perpage);
 
 		echo "<table>";
 		echo "<tr>
@@ -117,16 +117,15 @@
 			echo "<td>$nama</td>";
 
 			echo "<td>
-						<a href='editdosen.php?npk=$npk'>Edit</a> |
+					<a href='editdosen.php?npk=$npk'>Edit</a> |
 						
-						<a href='deldosen.php?npk=$npk' onclick=\"return confirm('Yakin hapus dosen ini?');\">Delete</a>
-					</td>";
+					<a href='deldosen.php?npk=$npk' onclick=\"return confirm('Yakin hapus dosen ini?');\">Delete</a>
+				</td>";
 			echo "</tr>";
 		}
 
 		echo "</table>";
 
-		$con->close();
 		?>
 
 

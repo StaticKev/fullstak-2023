@@ -13,55 +13,45 @@
     <div class="style">
         <div class="container">
             <?php
-            require_once("conn.php");
+            require_once("service/dosen.php");
+            $objDosen = new dosen();
 
             $npk = $_POST['txt_npk'];
             $nama = $_POST['txt_nama'];
             $foto_extension = "";
 
-            if (isset($_FILES['img_gambar']) && $_FILES['img_gambar']['error'] == 0) {
-                $sql = "SELECT foto_extension FROM dosen WHERE npk=?";
-                $stmt = $con->prepare($sql);
-                $stmt->bind_param("s", $npk);
-                $stmt->execute();
+            if ($_FILES['img_gambar']['error'] == 0) {
+                $stmt = $objDosen->getAllDosen($npk);
+                $row = $stmt->fetch_assoc();
+                $foto_extension = $row['foto_extension'];
 
-                $res = $stmt->get_result();
-                $row = $res->fetch_assoc();
-                $old_extension = $row['foto_extension'];
-                $gambar_old = "gambar/dosen/$npk.$old_extension";
+                if(isset($_FILES['img_gambar'])){
+                    $gambar_old = "gambar/dosen/$npk.$foto_extension";
+    
+                    if (file_exists($gambar_old)) {
+                        unlink($gambar_old);
+                    }
+    
+                    $gambar = $_FILES['img_gambar'];
+                    $ext = pathinfo($gambar['name'], PATHINFO_EXTENSION);
+                    $dst = "gambar/dosen/$npk.$ext";
+                    move_uploaded_file($gambar['tmp_name'], $dst);
+                    $foto_extension = $ext;
 
-                if (file_exists($gambar_old)) {
-                    unlink($gambar_old);
                 }
 
-                $gambar = $_FILES['img_gambar'];
-                $ext = pathinfo($gambar['name'], PATHINFO_EXTENSION);
-                $dst = "gambar/dosen/$npk.$ext";
-                move_uploaded_file($gambar['tmp_name'], $dst);
-                $foto_extension = $ext;
             } else {
-                $sql = "SELECT foto_extension FROM dosen WHERE npk=?";
-                $stmt = $con->prepare($sql);
-                $stmt->bind_param("s", $npk);
-                $stmt->execute();
-
-                $res = $stmt->get_result();
-                $row = $res->fetch_assoc();
-                $foto_extension = $row['foto_extension'];
+                #error upload file
+                echo "<h2>Gagal mengupload gambar.</h2>";
             }
 
-            $sql2 = "UPDATE dosen SET nama=?, foto_extension=? WHERE npk=?";
-            $stmt2 = $con->prepare($sql2);
-            $stmt2->bind_param('sss', $nama, $foto_extension, $npk);
-
-            if ($stmt2->execute()) {
+            if ($objDosen->updateDosen($npk, $nama, $foto_extension)) {
                 echo "<h2>Update Sukses.</h2>";
             } else {
                 echo "<h2>Update Gagal.</h2>";
             }
             echo "<br><a href='tampilandosen.php' class='back-btn'>Kembali ke tampilan Dosen</a>";
 
-            $con->close();
             ?>
 
         </div>

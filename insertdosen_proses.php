@@ -14,7 +14,10 @@
 <body>
 	<?php
 	include('header.php');
-	require_once("conn.php");
+	require_once("service/dosen.php");
+	require_once("service/akun.php");
+	$objDosen = new dosen();
+	$objAkun = new akun();
 
 	$npk = $_POST['txtnpk'];
 	$nama = $_POST['txtnama'];
@@ -30,11 +33,7 @@
 	}
 
 	// Cek apakah NPK sudah ada
-	$sql_check = "SELECT npk FROM dosen WHERE npk = ?";
-	$stmt_check = $con->prepare($sql_check);
-	$stmt_check->bind_param("s", $npk);
-	$stmt_check->execute();
-	$result = $stmt_check->get_result();
+	$result = $objDosen->getAllDosen($npk);
 
 	if ($result->num_rows > 0) {
 		// NPK sudah ada → tampilkan alert dan kembali ke form
@@ -46,23 +45,15 @@
 	}
 
 
-	$sql = "INSERT INTO dosen(npk, nama, foto_extension) VALUES(?,?,?)";
-	$stmt = $con->prepare($sql);
-	$stmt->bind_param('sss', $npk, $nama, $foto_extention);
-	$stmt->execute();
-
-	if ($stmt) {
+	if ($objDosen -> insertDosen($npk, $nama, $foto_extention)) {
 		$hashed_password = password_hash($_POST['txtpassword'], PASSWORD_DEFAULT);
 		$username = "D$npk";
 		$nrp_mahasiswa = NULL;
 		$npk_dosen = $npk;
 		$isadmin = 0;
+		$objAkun->insertAkun($username, $hashed_password, $nrp_mahasiswa, $npk_dosen, $isadmin);
 
-		$sqlAkun = "INSERT INTO akun(username, password, nrp_mahasiswa, npk_dosen, isadmin) 
-					VALUES (?, ?, ?, ?, ?)";
-		$stmtAkun = $con->prepare($sqlAkun);
-		$stmtAkun->bind_param("ssssi", $username, $hashed_password, $nrp_mahasiswa, $npk_dosen, $isadmin);
-		$stmtAkun->execute(); ?>
+		?>
 
 		<div class="style">
 			<div class="container">
@@ -79,7 +70,6 @@
 	}
 	echo "<a href='index.php' class='back-btn'>Kembali ke Home</a>";
 
-	$con->close();
 	?>
 		</div>
 	</div>

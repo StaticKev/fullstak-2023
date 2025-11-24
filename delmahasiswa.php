@@ -1,5 +1,8 @@
 <?php
-    require_once ("conn.php");
+    require_once ("service/mahasiswa.php");
+    require_once ("service/akun.php");
+    $objMahasiswa = new mahasiswa();
+    $objAkun = new akun();
 
     $nrp = $_GET['nrp'];
     $username = "M".$nrp;
@@ -15,15 +18,7 @@
         $nama = $row['nama'];
         $ext = $row['foto_extention'];
 
-        $sqlAkun = "DELETE FROM akun WHERE username=?";
-        $stmtAkun = $con->prepare($sqlAkun);
-        $stmtAkun->bind_param("s", $username);
-        
-        $sqlMhs = "DELETE FROM mahasiswa WHERE nrp=?";
-        $stmtMhs = $con->prepare($sqlMhs);
-        $stmtMhs->bind_param("s", $nrp);
-    
-        if($stmtAkun->execute() && $stmtMhs->execute()) {
+        if($objAkun->deleteAkun($username) && $objMahasiswa->deleteMahasiswa($nrp)) {
             $filePath = "gambar/mahasiswa/$nrp.$ext";
             if (file_exists($filePath)) {
                 unlink($filePath);
@@ -40,6 +35,4 @@
 
     echo "<a href='tampilanmahasiswa.php'>Kembali ke Tampilan Mahasiswa</a>";
 
-    $stmt->close();
-    $con->close();
 ?>
