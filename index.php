@@ -27,7 +27,7 @@ session_start();
 				<a href="tampilandosen.php"><button>LIST DOSEN</button></a>
 				<a href="insertmahasiswa.php"><button>TAMBAH MAHASISWA</button></a>
 				<a href="tampilanmahasiswa.php"><button>LIST MAHASISWA</button></a>
-				<a href="editPasswordAkun.php"><button>GANTI PASSWORD</button></a>
+				<a href="editpassword.php"><button>GANTI PASSWORD</button></a>
 				<a class="logout" href="logout.php">Logout</a>
 
 
@@ -36,7 +36,9 @@ session_start();
 				echo "<h2>Selamat Datang, " . htmlspecialchars($_SESSION['username']) . "</h2>"; ?>
 
 				<p>Anda login sebagai <strong>user</strong></p>
-				<a href="editPasswordAkun.php"><button>GANTI PASSWORD</button></a>
+				<a href="editpassword.php"><button>GANTI PASSWORD</button></a>
+				<a class="logout" href="logout.php">Logout</a>
+
 				<!-- <a class="logout" href="logout.php">Logout</a> -->
 
 			<?php }

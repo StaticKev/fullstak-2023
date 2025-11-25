@@ -1,5 +1,9 @@
 <?php
-	require_once ("conn.php");
+	require_once ("service/mahasiswa.php");
+	require_once ("service/akun.php");
+	$objMahasiswa = new mahasiswa();
+	$objAkun = new akun();
+
 	$message ="";
     $nrp = $_POST['txt_nrp'];
     $nama = $_POST['txt_nama'];
@@ -16,10 +20,20 @@
 		$foto_extention = $ext;
 	}
 
-    $sql = "INSERT INTO mahasiswa (nrp, nama, gender, tanggal_lahir, angkatan, foto_extention) VALUES (?,?,?,?,?,?)";
-    $stmt = $con->prepare($sql);
-    $stmt->bind_param('ssssss', $nrp, $nama, $gender, $tanggal_lahir, $angkatan, $foto_extention);
-    $stmt->execute();
+    // Cek apakah NPK sudah ada
+	$check = $objMahasiswa->getAllMahasiswa($nrp);
+
+	if ($check->num_rows > 0) {
+		// NRP sudah ada → tampilkan alert dan kembali ke form
+		echo "<script>
+				alert('NRP sudah terdaftar!');
+				window.location.href = 'insertmahasiswa.php';
+			</script>";
+		exit();
+	}
+
+    // Insert data mahasiswa
+	$stmt = $objMahasiswa->insertMahasiswa($nrp, $nama, $gender, $tanggal_lahir, $angkatan, $foto_extention);
 
     if ($stmt) {
         $message =$message. "<p>✅ Insert data mahasiswa berhasil.</p>";
@@ -31,10 +45,7 @@
         $npk_dosen = NULL;
         $isadmin = 0;
 
-        $sqlAkun = "INSERT INTO akun(username, password, nrp_mahasiswa, npk_dosen, isadmin) VALUES (?, ?, ?, ?, ?)";
-        $stmtAkun = $con->prepare($sqlAkun);
-        $stmtAkun->bind_param("sssii", $username, $hashed_password, $nrp_mahasiswa, $npk_dosen, $isadmin);
-        $stmtAkun->execute();
+        $stmtAkun = $objAkun->insertAkun($username, $hashed_password, $nrp_mahasiswa, $npk_dosen, $isadmin);
 
         if ($stmtAkun) {
             $message =$message. "<p>✅ Akun mahasiswa berhasil dibuat.</p>";

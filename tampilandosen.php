@@ -1,3 +1,14 @@
+<?php
+session_start();
+include('service/dosen.php');
+$objDosen = new dosen();
+
+if($_SESSION['admin'] == 0) {
+	require_once ('service/404.php');
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -21,7 +32,6 @@
 		</div>
 
 		<?php
-		require_once("conn.php");
 
 		if (isset($_GET['cboPage'])) {
 			$perpage = $_GET['cboPage'];
@@ -43,12 +53,7 @@
 		";
 		
 		//ambil total data
-		$sql = "SELECT * FROM dosen";
-		$stmt = $con->prepare($sql);
-		$stmt->execute();
-		$result = $stmt->get_result();
-
-		$jumlahData = $result->num_rows;
+		$jumlahData = $objDosen->getAllDosen();
 		//set total hlm
 		$totalpage = ceil($jumlahData / $perpage);
 
@@ -61,34 +66,29 @@
 			$start = 0;
 		}
 
-		echo "<a href='index.php?p=1&cboPage=$perpage'>First</a> ";
+		echo "<a href='tampilandosen.php?p=1&cboPage=$perpage'>First</a> ";
 		if ($p==1) {
 			echo "Prev ";	
 		}
 		else {
 			$x = $p-1;
-			echo "<a href='index.php?p=$x&cboPage=$perpage'>Prev</a> ";
+			echo "<a href='tampilandosen.php?p=$x&cboPage=$perpage'>Prev</a> ";
 		}
 		
-		for($i =1; $i<= $totalpage; $i++) {
-			echo "<a href='index.php?p=$i&cboPage=$perpage'>$i</a> ";
+		for ($i = 1; $i <= $totalpage; $i++) {
+			echo "<a href='tampilandosen.php?p=$i&cboPage=$perpage'>$i</a> ";
 		}
 
-		if ($p==$totalpage) {
-			echo "Next ";	
+		if ($p == $totalpage) {
+			echo "Next ";
+		} else {
+			$x = $p + 1;
+			echo "<a href='tampilandosen.php?p=$x&cboPage=$perpage'>Next</a> ";
 		}
-		else {
-			$x = $p+1;
-			echo "<a href='index.php?p=$x&cboPage=$perpage'>Next</a> ";
-		}
-		echo "<a href='index.php?p=$totalpage&cboPage=$perpage'>Last</a> </div>";
 
-		$sql = "SELECT * FROM dosen LIMIT ?,?";
-		$stmt = $con->prepare($sql);
-		$stmt->bind_param("ii", $start, $perpage);
-		$stmt->execute();
+		echo "<a href='tampilandosen.php?p=$totalpage&cboPage=$perpage'>Last</a><br><br><br></div>";
 
-		$result = $stmt->get_result();
+		$result = $objDosen->getDosenLimit($start, $perpage);
 
 		echo "<table>";
 		echo "<tr>
@@ -117,16 +117,15 @@
 			echo "<td>$nama</td>";
 
 			echo "<td>
-						<a href='editdosen.php?npk=$npk'>Edit</a> |
+					<a href='editdosen.php?npk=$npk'>Edit</a> |
 						
-						<a href='deldosen.php?npk=$npk' onclick=\"return confirm('Yakin hapus dosen ini?');\">Delete</a>
-					</td>";
+					<a href='deldosen.php?npk=$npk' onclick=\"return confirm('Yakin hapus dosen ini?');\">Delete</a>
+				</td>";
 			echo "</tr>";
 		}
 
 		echo "</table>";
 
-		$con->close();
 		?>
 
 

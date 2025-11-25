@@ -1,3 +1,14 @@
+<?php
+session_start();
+include('service/mahasiswa.php');
+$objMhs = new mahasiswa();
+
+if($_SESSION['admin'] == 0) {
+	require_once ('service/404.php');
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -19,7 +30,6 @@
 			</a>
 		</div>
 		<?php
-		require_once("conn.php");
 
 		if (isset($_GET['cboPage'])) {
 			$perpage = $_GET['cboPage'];
@@ -39,14 +49,9 @@
 			</select>
 		</form>
 		";
-
+		
 		//ambil total data
-		$sql = "SELECT * FROM mahasiswa";
-		$stmt = $con->prepare($sql);
-		$stmt->execute();
-		$result = $stmt->get_result();
-
-		$jumlahData = $result->num_rows;
+		$jumlahData = $objMhs->getAllMahasiswa();
 		//set total hlm
 		$totalpage = ceil($jumlahData / $perpage);
 
@@ -59,46 +64,41 @@
 			$start = 0;
 		}
 
-		echo "<a href='index.php?p=1&cboPage=$perpage'>First</a> ";
+		echo "<a href='tampilanmahasiswa.php?p=1&cboPage=$perpage'>First</a> ";
 		if ($p==1) {
 			echo "Prev ";	
 		}
 		else {
 			$x = $p-1;
-			echo "<a href='index.php?p=$x&cboPage=$perpage'>Prev</a> ";
+			echo "<a href='tampilanmahasiswa.php?p=$x&cboPage=$perpage'>Prev</a> ";
 		}
 		
-		for($i =1; $i<= $totalpage; $i++) {
-			echo "<a href='index.php?p=$i&cboPage=$perpage'>$i</a> ";
+		for ($i = 1; $i <= $totalpage; $i++) {
+			echo "<a href='tampilanmahasiswa.php?p=$i&cboPage=$perpage'>$i</a> ";
 		}
 
-		if ($p==$totalpage) {
-			echo "Next ";	
+		if ($p == $totalpage) {
+			echo "Next ";
+		} else {
+			$x = $p + 1;
+			echo "<a href='tampilanmahasiswa.php?p=$x&cboPage=$perpage'>Next</a> ";
 		}
-		else {
-			$x = $p+1;
-			echo "<a href='index.php?p=$x&cboPage=$perpage'>Next</a> ";
-		}
-		echo "<a href='index.php?p=$totalpage&cboPage=$perpage'>Last</a> </div>";
 
-		$sql = "SELECT * FROM mahasiswa LIMIT ?,?";
-		$stmt = $con->prepare($sql);
-		$stmt->bind_param("ii", $start, $perpage);
-		$stmt->execute();
+		echo "<a href='tampilanmahasiswa.php?p=$totalpage&cboPage=$perpage'>Last</a><br><br><br></div>";
 
-		$result = $stmt->get_result();
-
+		$result = $objMhs->getMahasiswaLimit($start, $perpage);
 
 		echo "<table>";
-		echo "<tr>
-						<th>Gambar</th>
-						<th>NRP</th>
-						<th>Nama</th>
-						<th>Gender</th>
-						<th>Tanggal Lahir</th>
-						<th>Angkatan</th>
-						<th>Aksi</th>
-					  </tr>";
+		echo 
+		"<tr>
+			<th>Gambar</th>
+			<th>NRP</th>
+			<th>Nama</th>
+			<th>Gender</th>
+			<th>Tanggal Lahir</th>
+			<th>Angkatan</th>
+			<th>Aksi</th>
+		</tr>";
 
 		while ($row = $result->fetch_assoc()) {
 			$nrp = $row['nrp'];
@@ -132,9 +132,7 @@
 
 		echo "</table>";
 
-		$con->close();
 		?>
-
 
 	</div>
 
