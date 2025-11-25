@@ -53,7 +53,7 @@ if($_SESSION['admin'] == 0) {
 		";
 		
 		//ambil total data
-		$jumlahData = $objDosen->getAllDosen();
+		$jumlahData = $objDosen->getAllDosen()->num_rows;
 		//set total hlm
 		$totalpage = ceil($jumlahData / $perpage);
 
