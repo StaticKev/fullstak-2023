@@ -51,7 +51,7 @@ if($_SESSION['admin'] == 0) {
 		";
 		
 		//ambil total data
-		$jumlahData = $objMhs->getAllMahasiswa();
+		$jumlahData = $objMhs->getAllMahasiswa()->num_rows;
 		//set total hlm
 		$totalpage = ceil($jumlahData / $perpage);
 
