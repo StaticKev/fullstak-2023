@@ -48,6 +48,8 @@
     }
 </style>
 
+<?php
+if ($_SESSION['admin'] == 1) { ?>
 <div class="navbar">
     <div class="nav-links">
         <a href="index.php">🏠 Home</a>
@@ -58,3 +60,18 @@
         <?php endif; ?>
     </div>
 </div>
+
+<?php } else { ?>
+
+<div class="navbar">
+    <div class="nav-links">
+        <a href="index.php">🏠 Home</a>
+        <a href="tampilangrup.php?search="> 🔍 Cari Grup</a>
+        <a href="tampilangrup.php?list="> 👨‍🏫 Grupmu</a>
+        <?php if (isset($_SESSION['login'])): ?>
+            <a href="logout.php">🚪 Logout</a>
+        <?php endif; ?>
+    </div>
+</div>
+
+<?php } ?>

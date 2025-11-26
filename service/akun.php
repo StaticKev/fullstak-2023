@@ -75,7 +75,8 @@ class akun extends connection
         return $storedPassword;
     }
 
-    public function getGrupList($pUsername){
+    public function getGrupList($pUsername)
+    {
         $sql = "SELECT g.* FROM member_grup m INNER JOIN grup g ON m.idgrup = g.idgrup WHERE m.username = ?";
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("s", $pUsername);
@@ -85,12 +86,22 @@ class akun extends connection
         return $result;
     }
 
-    public function addGrup($pUsername, $pIdGrup, $kodeDaftar){ //! KURANG cek kodenya, kalo bener, maka masukin ke member_grup  || untuk mahasiswa yg mau gabung
+    public function getGrupLimit($pUsername, $offset = 0, $limit = 0)
+    {
+        $sql = "SELECT g.* FROM member_grup m INNER JOIN grup g ON m.idgrup = g.idgrup WHERE m.username = ? LIMIT ?,?";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("sii", $pUsername, $offset, $limit);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result;
+    }
+
+    public function addGrup($pUsername, $pIdGrup, $kodeDaftar)
+    { //! KURANG cek kodenya, kalo bener, maka masukin ke member_grup  || untuk mahasiswa yg mau gabung
         $sql = "INSERT INTO member_grup(username, idgrup) VALUES(?,?)";
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("si", $pUsername, $pIdGrup);
         return $stmt->execute();
     }
-
-
 }
