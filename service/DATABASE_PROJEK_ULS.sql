@@ -256,4 +256,81 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-21 18:04:33
+-- Dump completed on 2025-11-26 10:54:25
+
+
+-- =================================================================================================================================
+-- DUMMY DATA UNTUK TABEL GRUP
+-- =================================================================================================================================
+LOCK TABLES `grup` WRITE;
+ALTER TABLE `grup` DISABLE KEYS;
+
+INSERT INTO `grup` (idgrup, username_pembuat, nama, deskripsi, tanggal_pembentukan, jenis, kode_pendaftaran)
+VALUES
+(1, 'M000000001', 'Grup Belajar Pemrograman', 'Diskusi materi coding', '2025-01-10 10:00:00', 'Publik', 'GBLJR2025'),
+(2, 'M000000002', 'Komunitas Fotografi', 'Sharing teknik foto', '2025-02-15 14:30:00', 'Privat', 'FOTO2025'),
+(3, 'D000001', 'Kelas Bimbingan Dosen 1', 'Grup bimbingan akademik', '2025-03-01 09:00:00', 'Publik', 'BIMD001'),
+(4, 'M000000003', 'Esports UBAYA', 'Tim dan komunitas esports', '2025-04-05 20:00:00', 'Publik', 'ESPT2025'),
+(5, 'D000003', 'Penelitian AI', 'Grup riset kecerdasan buatan', '2025-05-12 08:45:00', 'Privat', 'RISAI2025');
+
+ALTER TABLE `grup` ENABLE KEYS;
+UNLOCK TABLES;
+
+-- ===========================================
+-- DUMMY DATA UNTUK TABEL EVENT
+-- ===========================================
+LOCK TABLES `event` WRITE;
+ALTER TABLE `event` DISABLE KEYS;
+
+INSERT INTO `event` (idevent, idgrup, judul, `judul-slug`, tanggal, keterangan, jenis, poster_extension)
+VALUES
+(1, 1, 'Workshop Python Dasar', 'workshop-python-dasar', '2025-06-01 13:00:00',
+ 'Belajar dasar-dasar bahasa Python.', 'Publik', 'jpg'),
+
+(2, 1, 'Ngoding Bareng #1', 'ngoding-bareng-1', '2025-06-15 19:00:00',
+ 'Sesi ngoding bersama untuk pemula.', 'Privat', NULL),
+
+(3, 2, 'Hunting Foto Surabaya', 'hunting-foto-surabaya', '2025-07-10 08:00:00',
+ 'Hunting outdoor di area kota tua Surabaya.', 'Publik', 'png'),
+
+(4, 4, 'Turnamen Esports Internal', 'turnamen-esports-internal', '2025-08-20 18:00:00',
+ 'Kompetisi internal antar anggota komunitas.', 'Publik', 'jpg'),
+
+(5, 5, 'Seminar Riset AI', 'seminar-riset-ai', '2025-09-05 10:00:00',
+ 'Presentasi progres riset AI terbaru.', 'Privat', NULL);
+
+ALTER TABLE `event` ENABLE KEYS;
+UNLOCK TABLES;
+
+-- ===========================================
+-- DUMMY DATA UNTUK TABEL MEMBER_GRUP
+-- ===========================================
+LOCK TABLES `member_grup` WRITE;
+ALTER TABLE `member_grup` DISABLE KEYS;
+
+INSERT INTO `member_grup` (idgrup, username)
+VALUES
+-- Grup 1
+(1, 'M000000001'),
+(1, 'M000000003'),
+(1, 'M000000004'),
+
+-- Grup 2
+(2, 'M000000002'),
+(2, 'M000000005'),
+
+-- Grup 3
+(3, 'D000001'),
+(3, 'M000000001'),
+
+-- Grup 4
+(4, 'M000000003'),
+(4, 'M000000004'),
+(4, 'M000000005'),
+
+-- Grup 5
+(5, 'D000003'),
+(5, 'M000000002');
+
+ALTER TABLE `member_grup` ENABLE KEYS;
+UNLOCK TABLES;
