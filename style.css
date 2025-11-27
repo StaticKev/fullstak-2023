@@ -44,17 +44,6 @@ body {
     animation: glow 2s infinite alternate;
 }
 
-.grup {
-    background: rgba(20, 20, 20, 0.9);
-    padding: 0;
-    margin: 2rem 1rem;
-    border-radius: 20px;
-    width: 500px;
-    text-align: left;
-    backdrop-filter: blur(6px);
-    animation: glow 2s infinite alternate;
-}
-
 @keyframes glow {
     0% {
         box-shadow: 0 0 8px #ffffff;
@@ -212,12 +201,22 @@ img {
     box-shadow: 0 0 6px #000;
 }
 
+.grup {
+    background: rgba(20, 20, 20, 0.9);
+    padding: 0;
+    margin: 2rem 1rem;
+    border-radius: 20px;
+    width: 350px;
+    text-align: left;
+    backdrop-filter: blur(6px);
+    animation: glow 2s infinite alternate;
+}
+
 .grup .image {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 10rem;
-    overflow: hidden; 
+    height: 15rem;
 }
 
 .grup .image img {
@@ -226,6 +225,29 @@ img {
     object-fit: cover;
     object-position: center;
     border-radius: 10px 10px 0 0px;
+}
+
+.grupDesc {
+    padding:0 2rem 2rem 2rem;
+}
+
+.infoGrup>p {
+    padding:0;
+    margin: 0;
+    font-size: x-small;
+}
+
+.grupDesc h2 {
+    margin: 1rem 0 0 0;
+    text-align: center;
+}
+
+.grupDesc>p {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    line-clamp: 3; /* Jumlah baris yang diinginkan */
+    -webkit-line-clamp: 3;
 }
 
 a {
@@ -366,3 +388,4 @@ a {
 .login-container a:hover {
     color: #ffffff;
 }
+

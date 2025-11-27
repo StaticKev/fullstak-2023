@@ -95,13 +95,13 @@ if (isset($_GET['search'])) {
                 echo "<a href='tampilandosen.php?p=$x&cboPage=$perpage'>Next</a> ";
             }
 
-            echo "<a href='tampilandosen.php?p=$totalpage&cboPage=$perpage'>Last</a><br><br><br>
-        </div>";
+            echo "<a href='tampilandosen.php?p=$totalpage&cboPage=$perpage'>Last</a><br><br><br>";
 
-        //taruh search bar disini
+            //! search bar blm berfungsi
+            echo "<input type='text' onchange='' placeholder='Search...'>";
+
+        echo"</div>";
         
-      
-
         ?>
 
     </div>
@@ -111,12 +111,19 @@ if (isset($_GET['search'])) {
         <!-- tinggal nanti di looping yang div dgn class grup dibawah -->
         <div class="grup">
             <div class="image">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmDwycVzCsWaZx5AaCTeqz6e8qLbt8UaQz7g&s" alt="asdas">
-
+                <img src="https://www.imatest.com/wp-content/uploads/2022/01/sfrreg_center_chart_90h.png" alt="Profile Grup">
             </div>
-            
-            hai
+            <div class="grupDesc">
+                <h2>Nama Grup</h2>
+                <p>Deskripsi grup ini</p>
+                <div class="infoGrup">
+                    <p>Dibuat oleh : </p> <!-- //! masukin pembuatnya dan tgl -->
+                    <p>Dibuat pada : </p> 
+                </div>
+                <a href="detilgrup.php?id=???"><button>Lihat Detail</button></a> <!-- //! kirim id grupnya pake GET -->
+            </div>
         </div>
+        
     </div>
 
 </body>
