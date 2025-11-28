@@ -1,46 +1,46 @@
 <?php
-session_start();
-include_once('service/grup.php');
-include_once('service/akun.php');
-$objGrup = new grup();
-$objAkun = new akun();
+    session_start();
+    include_once('service/grup.php');
+    include_once('service/akun.php');
+    $objGrup = new grup();
+    $objAkun = new akun();
 
-if (!isset($_GET['search']) && !isset($_GET['list'])) {
-    header("Location: index.php");
-    exit();
-}
+    if (!isset($_GET['search']) && !isset($_GET['list'])) {
+        header("Location: index.php");
+        exit();
+    }
 
-if (!isset($_SESSION['login'])) {
-    header("Location: login_temp.php");
-    exit();
-}
+    if (!isset($_SESSION['login'])) {
+        header("Location: login_temp.php");
+        exit();
+    }
 
-if (isset($_GET['search'])) {
-    $perpage = $_GET['search'];
-    $type = "search";
-} elseif (isset($_GET['list'])) {
-    $perpage = $_GET['list'];
-    $type = "list";
-}
+    if (isset($_GET['search'])) {
+        $perpage = $_GET['search'];
+        $type = "search";
+    } elseif (isset($_GET['list'])) {
+        $perpage = $_GET['list'];
+        $type = "list";
+    }
 
-if (isset($_GET['p'])) {
-    $p = $_GET['p'];
-    $start = ($p - 1) * $perpage;
-} else {
-    $p = 1;
-    $start = 0;
-}
+    if (isset($_GET['p'])) {
+        $p = $_GET['p'];
+        $start = ($p - 1) * $perpage;
+    } else {
+        $p = 1;
+        $start = 0;
+    }
 
-if (isset($_GET['search'])) {
-    $jumlahData = $objGrup->getAllGrup()->num_rows;
-    $result = $objGrup->getGrupLimit($start, $perpage);
+    if (isset($_GET['search'])) {
+        $jumlahData = $objGrup->getAllGrup()->num_rows;
+        $result = $objGrup->getGrupLimit($start, $perpage);
 
-} elseif (isset($_GET['list'])) {
-    $jumlahData = $objAkun->getGrupLimit($_SESSION['username'],$start, $perpage)->num_rows;
-    $result = $objGrup->getGrupLimit($start, $perpage);
-}
+    } elseif (isset($_GET['list'])) {
+        $jumlahData = $objAkun->getGrupLimit($_SESSION['username'],$start, $perpage)->num_rows;
+        $result = $objGrup->getGrupLimit($start, $perpage);
+    }
 
-
+    $isDosen = ($_SESSION['username'][0] === 'D');
 ?>
 
 
@@ -61,6 +61,11 @@ if (isset($_GET['search'])) {
     <div class="styleTampilan">
 
         <h2>CARI GRUP</h2>
+        
+        <?php
+            if ($isDosen) echo '<a href="insertgrup.php"><button>BUAT GRUP</button></a>';
+        ?>
+
         <?php
         echo //pagging
         "<div class='paging'>
