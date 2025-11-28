@@ -31,15 +31,8 @@
         $start = 0;
     }
 
-    if (isset($_GET['search'])) {
-        $jumlahData = $objGrup->getAllGrup()->num_rows;
-        $result = $objGrup->getGrupLimit($start, $perpage);
 
-    } elseif (isset($_GET['list'])) {
-        $jumlahData = $objAkun->getGrupLimit($_SESSION['username'],$start, $perpage)->num_rows;
-        $result = $objGrup->getGrupLimit($start, $perpage);
-    }
-
+    
     $isDosen = ($_SESSION['username'][0] === 'D');
 ?>
 
@@ -57,77 +50,102 @@
 
 <body>
     <?php include('header.php'); ?>
-    <h2></h2>
     <div class="styleTampilan">
 
-        <h2>CARI GRUP</h2>
         
+            
         <?php
-            if ($isDosen) echo '<a href="insertgrup.php"><button>BUAT GRUP</button></a>';
-        ?>
 
-        <?php
-        echo //pagging
-        "<div class='paging'>
-            <form method='get' action='tampilangrup.php'>
-                Per Page
-                <select name='" . $type . "' onchange='this.form.submit()'>
-                    <option value='2' " . ($perpage == 2 ? "selected" : "") . ">2</option>
-                    <option value='3' " . ($perpage == 3 ? "selected" : "") . ">3</option>
-                    <option value='4' " . ($perpage == 4 ? "selected" : "") . ">4</option>
-                    <option value='5' " . ($perpage == 5 ? "selected" : "") . ">5</option>
-                </select>
-            </form>";
+            if (isset($_GET['search'])) {
+                $jumlahData = $objGrup->getAllGrup()->num_rows;
+                $result = $objGrup->getGrupLimit($start, $perpage);
 
-            $totalpage = ceil($jumlahData / $perpage);
+            } elseif (isset($_GET['list'])) {
+                $jumlahData = $objAkun->getGrupList($_SESSION['username'])->num_rows;
+                $result = $objAkun->getGrupLimit($_SESSION['username'],$start, $perpage); //data yang didapat adalah data diaman user adalah member grup, BUKAN PEMBUAT GRUP
+            }
 
-            echo "<a href='tampilangrup.php?p=1&search=$perpage'>First</a> ";
-            if ($p == 1) {
-                echo "Prev ";
+            if($type == "search"){
+                echo "<h2>CARI GRUP</h2>";
             } else {
-                $x = $p - 1;
-                echo "<a href='tampilangrup.php?p=$x&search=$perpage'>Prev</a> ";
+                echo "<h2>GRUPMU</h2>";
             }
 
-            for ($i = 1; $i <= $totalpage; $i++) {
-                echo "<a href='tampilangrup.php?p=$i&search=$perpage'>$i</a> ";
-            }
+            if ($isDosen && $type == "list") echo '<a href="insertgrup.php"><button>BUAT GRUP</button></a>';
 
-            if ($p == $totalpage) {
-                echo "Next ";
-            } else {
-                $x = $p + 1;
-                echo "<a href='tampilandosen.php?p=$x&cboPage=$perpage'>Next</a> ";
-            }
+            echo //pagging
+            "<div class='paging'>
+                <form method='get' action='tampilangrup.php'>
+                    Per Page
+                    <select name='" . $type . "' onchange='this.form.submit()'>
+                        <option value='2' " . ($perpage == 2 ? "selected" : "") . ">2</option>
+                        <option value='3' " . ($perpage == 3 ? "selected" : "") . ">3</option>
+                        <option value='4' " . ($perpage == 4 ? "selected" : "") . ">4</option>
+                        <option value='5' " . ($perpage == 5 ? "selected" : "") . ">5</option>
+                    </select>
+                </form>";
 
-            echo "<a href='tampilandosen.php?p=$totalpage&cboPage=$perpage'>Last</a><br><br><br>";
+                $totalpage = ceil($jumlahData / $perpage);
 
-            //! search bar blm berfungsi
-            echo "<input type='text' onchange='' placeholder='Search...'>";
+                echo "<a href='tampilangrup.php?p=1&search=$perpage'>First</a> ";
+                if ($p == 1) {
+                    echo "Prev ";
+                } else {
+                    $x = $p - 1;
+                    echo "<a href='tampilangrup.php?p=$x&search=$perpage'>Prev</a> ";
+                }
 
-        echo"</div>";
-        
+                for ($i = 1; $i <= $totalpage; $i++) {
+                    echo "<a href='tampilangrup.php?p=$i&search=$perpage'>$i</a> ";
+                }
+
+                if ($p == $totalpage) {
+                    echo "Next ";
+                } else {
+                    $x = $p + 1;
+                    echo "<a href='tampilangrup.php?p=$x&search=$perpage'>Next</a> ";
+                }
+
+                echo "<a href='tampilangrup.php?p=$totalpage&search=$perpage'>Last</a><br><br><br>";
+
+                //! search bar blm berfungsi
+                echo "<input type='text' onchange='' placeholder='Search...'>";
+
+            echo"</div>";
         ?>
-
     </div>
 
 
     <div class="styleGrup">
-        <!-- tinggal nanti di looping yang div dgn class grup dibawah -->
-        <div class="grup">
-            <div class="image">
-                <img src="https://www.imatest.com/wp-content/uploads/2022/01/sfrreg_center_chart_90h.png" alt="Profile Grup">
-            </div>
-            <div class="grupDesc">
-                <h2>Nama Grup</h2>
-                <p>Deskripsi grup ini</p>
-                <div class="infoGrup">
-                    <p>Dibuat oleh : </p> <!-- //! masukin pembuatnya dan tgl -->
-                    <p>Dibuat pada : </p> 
+        <?php while($grup = $result->fetch_assoc()) {
+            if ($_SESSION['username'] == $grup['username_pembuat']){
+                echo '<div class="grup" style="background: rgba(75, 75, 75, 0.9);">';
+            }
+            else {
+                echo '<div class="grup" >';
+            }
+
+            echo '
+                <div class="image">
+                    <img src="https://w7.pngwing.com/pngs/288/840/png-transparent-computer-icons-user-crowd-social-group-others-miscellaneous-monochrome-social-group-thumbnail.png" alt="Profile Grup">
                 </div>
-                <a href="detilgrup.php?id=???"><button>Lihat Detail</button></a> <!-- //! kirim id grupnya pake GET -->
+                <div class="grupDesc">
+                    <h2>'.$grup['nama'].'</h2>
+                    <p>'.$grup['deskripsi'].'</p>
+                    <div class="infoGrup">
+                        <p>Dibuat oleh : '.$grup['namaPembuat'].'</p> 
+                        <p>Dibuat pada : '.$grup['tanggal_pembentukan'].'</p> ';
+
+                        if ($_SESSION['username'] == $grup['username_pembuat']){
+                            echo '<p>kode : '.$grup['kode_pendaftaran'].'</p>';
+                        }
+            echo'   </div>
+                    <a href="detilgrup.php?id='.$grup['idgrup'].'"><button>Lihat Detail</button></a>
+                </div>
             </div>
-        </div>
+            ';
+
+        } ?>
         
     </div>
 
