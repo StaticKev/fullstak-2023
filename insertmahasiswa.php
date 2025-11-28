@@ -31,7 +31,7 @@ if($_SESSION['admin'] == 0) {
 				<input type="password" name="txt_password" placeholder="buat password"required>
 
 				<label>Gender:</label><br>
-				<div style="display: flex; gap: 20px; align-items: center;">
+				<div style="display: flex; gap: 10px; align-items: center;">
 					<label><input type="radio" name="rad_gender" value="Pria"> Pria</label>
 					<label><input type="radio" name="rad_gender" value="Wanita"> Wanita</label>
 				</div>

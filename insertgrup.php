@@ -1,0 +1,70 @@
+<?php
+    session_start();
+    include_once('service/grup.php');
+    include_once('service/akun.php');
+    $objGrup = new grup();
+    $objAkun = new akun();
+
+    if (!isset($_SESSION['login'])) {
+        header("Location: login_temp.php");
+        exit();
+    }
+
+    $usernamePembuat = $_SESSION['username'];
+    $tglBentuk = date("Y-m-d H:i:s");
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Grup</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <?php include('header.php'); ?>
+
+	<div class="style">
+
+        <div class="container">
+            <h2>Buat Grup Baru</h2>
+            <form method="post" enctype="multipart/form-data" action="insertgrupproses.php" onsubmit="return validateForm()">
+                <div>
+                    <label for="username">Id Pembuat:</label>
+                    <input type="text" id="username" name="txtusernamepembuat" value="<?php echo $usernamePembuat; ?>" readonly>
+                </div>
+
+                <div>
+                    <label for="namagrup">Nama Grup:</label>
+                    <input type="text" id="namagrup" name="txtnamagrup" maxlength="45" required>
+                </div>
+
+                <div>
+                    <label for="deskripsi">Deskripsi:</label>
+                    <input type="text" id="deskripsi" name="txtdeskripsi" maxlength="45" required>
+                </div>
+
+                <div>
+                    <label for="tglbentuk">Tanggal pembentukan:</label>
+                    <input type="text" id="tglbentuk" name="txttglbentuk" value="<?php echo $tglBentuk; ?>" readonly>
+                </div>
+
+                <label for="jenis">Jenis:</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+					<label><input type="radio" name="rad_jenis" value="Privat"> Privat</label>
+					<label><input type="radio" name="rad_jenis" value="Publik"> Publik</label>
+				</div>
+
+                <input type="submit" name="submit" value="Insert Grup">
+            </form>
+
+            <a href="tampilangrup.php">⬅ Kembali ke Grupmu</a>
+        </div>
+    </div>
+
+</body>
+
+</html>

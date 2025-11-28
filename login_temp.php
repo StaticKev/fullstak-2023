@@ -9,7 +9,7 @@ if (isset($_SESSION['login'])) {
     exit();
 }
 else {    
-    $objAkun->makeAdmin();
+    $objAkun->makeAdmin(); // HAPUS NANTI
 }
 
 if (isset($_POST['loginAttempt'])) {
