@@ -27,11 +27,30 @@ class grup extends connection
         return $result;
     }
 
-    public function createGrup($pIdGrup, $pJudul, $pSlug, $pTanggal, $pKeterangan, $pJenis, $pPosterExt)
+    public function createGrup($pPembuat, $pNama, $pDeskripsi, $pTanggal, $pJenis)
     {
-        $sql = "INSERT INTO event(idgrup, judul, judul-slug, tanggal, keterangan, jenis, poster_extension) VALUES(?,?,?,?,?,?,?)";
+        $input = microtime(true); //bisa pake daftar huruf dan angka tapi ini lebih unik lalu di hash juga
+        $hash = hash('sha256', $input); // Hash (64 karakter)
+        $kode = '';
+        $max = strlen($hash) - 1;
+        for ($i = 0; $i < 6; $i++) {
+            $randomIndex = random_int(0, $max); // Ambil 1 index karakter acak dari hash, lalu di concat ke kode
+            $kode .= $hash[$randomIndex];
+        }
+
+        $sql = "INSERT INTO grup(username_pembuat, nama, deskripsi, tanggal_pembentukan, jenis, kode_pendaftaran) VALUES(?,?,?,?,?,?)";
+        $stmt1 = $this->con->prepare($sql);
+        $stmt1->bind_param('ssssss', $pPembuat, $pNama, $pDeskripsi, $pTanggal, $pJenis, $kode);
+        if (!$stmt1->execute()) {
+            return false;
+        }
+
+        $groupId = $stmt1->insert_id; 
+
+        $sql = "INSERT INTO member_grup(username, idgrup) VALUES(?,?)";
         $stmt = $this->con->prepare($sql);
-        $stmt->bind_param('issssss', $pIdGrup, $pJudul, $pSlug, $pTanggal, $pKeterangan, $pJenis, $pPosterExt);
+        $stmt->bind_param("si", $pPembuat, $groupId);
+        
         return $stmt->execute();
     }
 
@@ -77,7 +96,15 @@ class grup extends connection
 
     public function getGrupLimit($offset = 0, $limit = 0)
     {
-        $sql = "SELECT * FROM grup LIMIT ?,?";
+        $sql = 
+        "SELECT (SELECT d.nama
+                 FROM akun a 
+                 INNER JOIN dosen d ON a.npk_dosen = d.npk 
+                 WHERE a.username = g.username_pembuat) 
+                AS namaPembuat,
+        g.* FROM grup g LIMIT ?,?
+        
+        ";
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("ii", $offset, $limit);
         $stmt->execute();

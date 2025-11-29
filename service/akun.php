@@ -77,9 +77,9 @@ class akun extends connection
 
     public function getGrupList($pUsername)
     {
-        $sql = "SELECT g.* FROM member_grup m INNER JOIN grup g ON m.idgrup = g.idgrup WHERE m.username = ?";
+        $sql = "SELECT g.* FROM member_grup m INNER JOIN grup g ON m.idgrup = g.idgrup WHERE m.username = ? OR g.username_pembuat = ?";
         $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("s", $pUsername);
+        $stmt->bind_param("ss", $pUsername, $pUsername);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -88,7 +88,16 @@ class akun extends connection
 
     public function getGrupLimit($pUsername, $offset = 0, $limit = 0)
     {
-        $sql = "SELECT g.* FROM member_grup m INNER JOIN grup g ON m.idgrup = g.idgrup WHERE m.username = ? LIMIT ?,?";
+        $sql = 
+        "SELECT 
+            (SELECT d.nama 
+             FROM akun a 
+             INNER JOIN dosen d ON a.npk_dosen = d.npk 
+             WHERE a.username = g.username_pembuat) 
+            AS namaPembuat, 
+            g.* FROM member_grup m INNER JOIN grup g ON m.idgrup = g.idgrup WHERE m.username = ? 
+            LIMIT ?,?
+        ";
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("sii", $pUsername, $offset, $limit);
         $stmt->execute();
@@ -99,9 +108,13 @@ class akun extends connection
 
     public function addGrup($pUsername, $pIdGrup, $kodeDaftar)
     { //! KURANG cek kodenya, kalo bener, maka masukin ke member_grup  || untuk mahasiswa yg mau gabung
-        $sql = "INSERT INTO member_grup(username, idgrup) VALUES(?,?)";
-        $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("si", $pUsername, $pIdGrup);
-        return $stmt->execute();
+        if($kodeDaftar){
+
+            $sql = "INSERT INTO member_grup(username, idgrup) VALUES(?,?)";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bind_param("si", $pUsername, $pIdGrup);
+            return $stmt->execute();
+            
+        }
     }
 }
