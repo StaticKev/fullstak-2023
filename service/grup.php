@@ -9,18 +9,18 @@ class grup extends connection
         parent::__construct();
     }
 
-    public function getMemberList($pIdGrup, $pNomor = 0){
-        if($pNomor != 0){
-            $sql = "SELECT a.username FROM member_grup m INNER JOIN akun a ON m.username = a.username WHERE m.idgrup = ? AND CONCAT(a.nrp_mahasiswa, a.npk_dosen) LIKE ?";
-            $stmt = $this->con->prepare($sql);
-            $stmt->bind_param("ss", $pIdGrup, '%'.$pNomor.'%');
+    public function getMemberList($pIdGrup){
+        // if($pNomor != 0){
+        //     $sql = "SELECT a.username FROM member_grup m INNER JOIN akun a ON m.username = a.username WHERE m.idgrup = ? AND CONCAT(a.nrp_mahasiswa, a.npk_dosen) LIKE ?";
+        //     $stmt = $this->con->prepare($sql);
+        //     $stmt->bind_param("ss", $pIdGrup, '%'.$pNomor.'%');
 
-        }
-        else {
-            $sql = "SELECT a.username, a.nrp_mahasiswa, a.npk_dosen FROM member_grup m INNER JOIN akun a ON m.username = a.username WHERE m.idgrup = ?";
+        // }
+        // else {
+            $sql = "SELECT * FROM member_grup m WHERE m.idgrup = ?";
             $stmt = $this->con->prepare($sql);
             $stmt->bind_param("s", $pIdGrup);
-        }
+        // }
         
         $stmt->execute();
         $result = $stmt->get_result();
@@ -85,7 +85,7 @@ class grup extends connection
             $stmt->execute();
             $result = $stmt->get_result();
         } else {
-            $sql = "SELECT * FROM grup";
+            $sql = "SELECT * FROM grup WHERE jenis = 'Publik'";
             $stmt = $this->con->prepare($sql);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -94,7 +94,25 @@ class grup extends connection
         return $result;
     }
 
-    public function getGrupLimit($offset = 0, $limit = 0)
+    public function getGrupLimit($offset = 0, $limit = 0, $pUser)
+    {
+            $sql = 
+            "SELECT (SELECT d.nama
+                    FROM akun a 
+                    INNER JOIN dosen d ON a.npk_dosen = d.npk 
+                    WHERE a.username = g.username_pembuat) 
+                    AS namaPembuat,
+            g.*, m.username as anggota FROM grup g LEFT JOIN member_grup m ON g.idgrup=m.idgrup AND m.username = ? WHERE jenis = 'Publik' 
+            LIMIT ?,?
+            ";
+
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("sii", $pUser, $offset, $limit);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
+    public function getGrupInfoDetail($pIdGrup)
     {
         $sql = 
         "SELECT (SELECT d.nama
@@ -102,12 +120,19 @@ class grup extends connection
                  INNER JOIN dosen d ON a.npk_dosen = d.npk 
                  WHERE a.username = g.username_pembuat) 
                 AS namaPembuat,
-        g.* FROM grup g LIMIT ?,?
-        
+        g.* FROM grup g WHERE g.idgrup = ?
         ";
         $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("ii", $offset, $limit);
+        $stmt->bind_param("i", $pIdGrup);
         $stmt->execute();
         return $stmt->get_result();
     }
+
+    public function updateGrup($pNama, $pDeskripsi, $pJenis, $pIdGrup){
+        $sql = "UPDATE grup SET nama=?, deskripsi=?, jenis=? WHERE idgrup = ?";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param('ssss', $pNama, $pDeskripsi, $pJenis, $pIdGrup);
+        return $stmt->execute();
+    }
+
 }

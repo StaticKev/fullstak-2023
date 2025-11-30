@@ -16,7 +16,7 @@ if($_SESSION['admin'] == 0) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<?php include('header.php'); ?> <!-- Tambahin ini aja -->
+	<?php include('header.php'); ?>
 	<div class="style">
 		<div class="container">
 			<h2>Input Data Mahasiswa</h2>

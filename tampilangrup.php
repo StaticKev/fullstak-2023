@@ -30,10 +30,9 @@
         $p = 1;
         $start = 0;
     }
-
-
     
     $isDosen = ($_SESSION['username'][0] === 'D');
+    $isMahasiswa = ($_SESSION['username'][0] === 'M');
 ?>
 
 
@@ -51,14 +50,12 @@
 <body>
     <?php include('header.php'); ?>
     <div class="styleTampilan">
-
-        
             
         <?php
 
             if (isset($_GET['search'])) {
                 $jumlahData = $objGrup->getAllGrup()->num_rows;
-                $result = $objGrup->getGrupLimit($start, $perpage);
+                $result = $objGrup->getGrupLimit($start, $perpage, $_SESSION['username']);
 
             } elseif (isset($_GET['list'])) {
                 $jumlahData = $objAkun->getGrupList($_SESSION['username'])->num_rows;
@@ -87,29 +84,26 @@
 
                 $totalpage = ceil($jumlahData / $perpage);
 
-                echo "<a href='tampilangrup.php?p=1&search=$perpage'>First</a> ";
+                echo "<a href='tampilangrup.php?p=1&$type=$perpage'>First</a> ";
                 if ($p == 1) {
                     echo "Prev ";
                 } else {
                     $x = $p - 1;
-                    echo "<a href='tampilangrup.php?p=$x&search=$perpage'>Prev</a> ";
+                    echo "<a href='tampilangrup.php?p=$x&$type=$perpage'>Prev</a> ";
                 }
 
                 for ($i = 1; $i <= $totalpage; $i++) {
-                    echo "<a href='tampilangrup.php?p=$i&search=$perpage'>$i</a> ";
+                    echo "<a href='tampilangrup.php?p=$i&$type=$perpage'>$i</a> ";
                 }
 
                 if ($p == $totalpage) {
                     echo "Next ";
                 } else {
                     $x = $p + 1;
-                    echo "<a href='tampilangrup.php?p=$x&search=$perpage'>Next</a> ";
+                    echo "<a href='tampilangrup.php?p=$x&$type=$perpage'>Next</a> ";
                 }
 
-                echo "<a href='tampilangrup.php?p=$totalpage&search=$perpage'>Last</a><br><br><br>";
-
-                //! search bar blm berfungsi
-                echo "<input type='text' onchange='' placeholder='Search...'>";
+                echo "<a href='tampilangrup.php?p=$totalpage&$type=$perpage'>Last</a><br><br><br>";
 
             echo"</div>";
         ?>
@@ -136,11 +130,32 @@
                         <p>Dibuat oleh : '.$grup['namaPembuat'].'</p> 
                         <p>Dibuat pada : '.$grup['tanggal_pembentukan'].'</p> ';
 
-                        if ($_SESSION['username'] == $grup['username_pembuat']){
-                            echo '<p>kode : '.$grup['kode_pendaftaran'].'</p>';
-                        }
+
             echo'   </div>
                     <a href="detilgrup.php?id='.$grup['idgrup'].'"><button>Lihat Detail</button></a>
+                    ';
+
+                    if ($grup['anggota'] != NULL) {
+                        if ($_SESSION['username'] == $grup['username_pembuat']) {
+                            echo '<a href="delgrup.php?id='.$grup['idgrup'].' ">
+                                    <button style="color:red;" onclick="return confirm(\'Yakin membubarkan grup ini?\');">Bubarkan Grup</button>
+                                </a>';
+                        }else {
+                            echo '<a href="delgrup.php?id='.$grup['idgrup'].'&user='.$_SESSION['username'].' ">
+                                    <button style="color:red;" onclick="return confirm(\'Yakin keluar grup ini?\');">Keluar Grup</button>
+                            </a>';
+
+                        }
+                    }
+                    else {
+                        echo '<a href="joingrup.php?id='.$grup['idgrup'].'&namaGrup='.$grup['nama'].'"> ">
+                            <button style="color:red;">Join Grup</button>
+                        </a>';
+                            
+                    }
+
+
+            echo '
                 </div>
             </div>
             ';

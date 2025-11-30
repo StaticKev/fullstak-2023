@@ -1,4 +1,5 @@
 <?php
+	session_start();
 	require_once ("service/mahasiswa.php");
 	require_once ("service/akun.php");
 	$objMahasiswa = new mahasiswa();
@@ -55,8 +56,6 @@
     } else {
         $message .= "<p>❌ Gagal insert mahasiswa: " . htmlspecialchars($con->error) . "</p>";
     }
-
-    $con->close();
 
 ?>
 

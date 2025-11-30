@@ -1,15 +1,35 @@
 <?php
     session_start();
-    include_once('service/grup.php');
-    $objGrup = new grup();
-
+    
     if (!isset($_SESSION['login'])) {
         header("Location: login_temp.php");
         exit();
     } 
+    
+    if($_SERVER['REQUEST_METHOD'] === 'POST'){
+        include_once('service/akun.php');
+        $objakun= new akun();
 
-    $usernamePembuat = $_SESSION['username'];
-    $namaGrup = $_SESSION['namaGrup']; // BELUM ADA YANG KIRIM 'namaGrup'!
+        if ($objakun->addGrup($_SESSION['username'],$_POST['idGrup'],$_POST['txtKodePendaftaran'])){
+            echo "<script>
+                    alert('berhasil bergabung!');
+                </script>";
+            header("location:index.php");
+            exit();
+        }
+        else {
+            echo "<script>
+                    alert('gagal bergabung!');
+                </script>";
+            exit();
+        }
+        
+    }
+    else {
+        $idGrup = $_GET['id'];
+        $namaGrup = $_GET['namaGrup'];
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -29,11 +49,12 @@
 
         <div class="container">
             <h2>Bergabung ke grup <?php echo $namaGrup; ?></h2>
-            <form method="post" action="joingrup.php" onsubmit="return validateForm()">
+            <form method="post" action="joingrup.php">
                 <div>
                     <label for="kodePendaftaran">Kode pendaftaran:</label>
-                    <input type="text" id="kodePendaftaran" name="txtKodePendaftaran" >
+                    <input type="text" id="kodePendaftaran" name="txtKodePendaftaran" required >
                 </div>
+                <input type="hidden" name="idGrup" value="<?php $idGrup; ?>">
 
                 <input type="submit" name="submit" value="Gabung">
             </form>

@@ -1,4 +1,7 @@
 <?php
+
+use LDAP\Result;
+
 require_once("conn.php");
 
 class akun extends connection
@@ -43,7 +46,7 @@ class akun extends connection
 					VALUES (?, ?, ?, ?, ?)";
         $stmtAkun = $this->con->prepare($sqlAkun);
         $stmtAkun->bind_param("ssssi", $username, $hashed_password, $nrp_mahasiswa, $npk_dosen, $isadmin);
-        $stmtAkun->execute();
+        return $stmtAkun->execute();
     }
 
     public function deleteAkun($pUsername)
@@ -107,8 +110,16 @@ class akun extends connection
     }
 
     public function addGrup($pUsername, $pIdGrup, $kodeDaftar)
-    { //! KURANG cek kodenya, kalo bener, maka masukin ke member_grup  || untuk mahasiswa yg mau gabung
-        if($kodeDaftar){
+    {
+        $sql = "SELECT kode_pendaftaran FROM grup WHERE idgrup = ?";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("i", $pIdGrup);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $kodeAsli = $result->fetch_assoc();
+
+
+        if($kodeDaftar == $kodeAsli){
 
             $sql = "INSERT INTO member_grup(username, idgrup) VALUES(?,?)";
             $stmt = $this->con->prepare($sql);
@@ -116,5 +127,9 @@ class akun extends connection
             return $stmt->execute();
             
         }
+        else {
+            return false;
+        }
     }
+
 }
