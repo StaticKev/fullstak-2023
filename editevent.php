@@ -152,7 +152,7 @@
             <?php echo $message; ?>
             
             <form method="post" action="editevent.php" enctype="multipart/form-data" onsubmit="return validateForm()">
-                <input type="hidden" name="txtidevent" value="<?php $idevent; ?>">
+                <input type="hidden" name="txtidevent" value="<?php echo $idevent; ?>">
                 
                 <div>
                     <label for="judul">Judul Event:</label>

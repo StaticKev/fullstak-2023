@@ -75,7 +75,7 @@ $kode = $info['kode_pendaftaran'];
                         <th colspan="2">Event</th>
                     </tr>
                     <tr>
-                        <th colspan="2"><a style="color:green;" href="insertevent.php">Tambah Event</a></th>
+                        <th colspan="2"><a style="color:green;" href="insertevent.php?id=<?= $_GET['id'] ?>">Tambah Event</a></th>
                     </tr>
                     <!-- diloop berdasarkan data event -->
                     <?php
