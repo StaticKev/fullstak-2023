@@ -15,7 +15,7 @@ if($_SESSION['admin'] == 0) {
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Projek UTS - Tampilan Dosen</title>
+	<title>Projek UTS - Tampilan Mahasiswa</title>
 	<link rel="stylesheet" href="style.css">
 </head>
 
@@ -39,7 +39,7 @@ if($_SESSION['admin'] == 0) {
 		}		
 
         echo "<div class='paging'>
-		<form method='get' action='tampilandosen.php'>
+		<form method='get' action='tampilanmahasiswa.php'>
 			Per Page
 			<select name='cboPage' onchange='this.form.submit()'>
 				<option value='2' ".($perpage==2?"selected":"").">2</option>
