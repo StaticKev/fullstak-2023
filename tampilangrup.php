@@ -1,38 +1,38 @@
 <?php
-    session_start();
-    include_once('service/grup.php');
-    include_once('service/akun.php');
-    $objGrup = new grup();
-    $objAkun = new akun();
+session_start();
+include_once('service/grup.php');
+include_once('service/akun.php');
+$objGrup = new grup();
+$objAkun = new akun();
 
-    if (!isset($_GET['search']) && !isset($_GET['list'])) {
-        header("Location: index.php");
-        exit();
-    }
+if (!isset($_GET['search']) && !isset($_GET['list'])) {
+    header("Location: index.php");
+    exit();
+}
 
-    if (!isset($_SESSION['login'])) {
-        header("Location: login_temp.php");
-        exit();
-    }
+if (!isset($_SESSION['login'])) {
+    header("Location: login_temp.php");
+    exit();
+}
 
-    if (isset($_GET['search'])) {
-        $perpage = $_GET['search'];
-        $type = "search";
-    } elseif (isset($_GET['list'])) {
-        $perpage = $_GET['list'];
-        $type = "list";
-    }
+if (isset($_GET['search'])) {
+    $perpage = $_GET['search'];
+    $type = "search";
+} elseif (isset($_GET['list'])) {
+    $perpage = $_GET['list'];
+    $type = "list";
+}
 
-    if (isset($_GET['p'])) {
-        $p = $_GET['p'];
-        $start = ($p - 1) * $perpage;
-    } else {
-        $p = 1;
-        $start = 0;
-    }
-    
-    $isDosen = ($_SESSION['username'][0] === 'D');
-    $isMahasiswa = ($_SESSION['username'][0] === 'M');
+if (isset($_GET['p'])) {
+    $p = $_GET['p'];
+    $start = ($p - 1) * $perpage;
+} else {
+    $p = 1;
+    $start = 0;
+}
+
+$isDosen = ($_SESSION['username'][0] === 'D');
+$isMahasiswa = ($_SESSION['username'][0] === 'M');
 ?>
 
 
@@ -50,28 +50,27 @@
 <body>
     <?php include('header.php'); ?>
     <div class="styleTampilan">
-            
+
         <?php
 
-            if (isset($_GET['search'])) {
-                $jumlahData = $objGrup->getAllGrup()->num_rows;
-                $result = $objGrup->getGrupLimit($start, $perpage, $_SESSION['username']);
+        if (isset($_GET['search'])) {
+            $jumlahData = $objGrup->getAllGrup()->num_rows;
+            $result = $objGrup->getGrupLimit($start, $perpage, $_SESSION['username']);
+        } elseif (isset($_GET['list'])) {
+            $jumlahData = $objAkun->getGrupList($_SESSION['username'])->num_rows;
+            $result = $objAkun->getGrupLimit($_SESSION['username'], $start, $perpage); //data yang didapat adalah data diaman user adalah member grup, BUKAN PEMBUAT GRUP
+        }
 
-            } elseif (isset($_GET['list'])) {
-                $jumlahData = $objAkun->getGrupList($_SESSION['username'])->num_rows;
-                $result = $objAkun->getGrupLimit($_SESSION['username'],$start, $perpage); //data yang didapat adalah data diaman user adalah member grup, BUKAN PEMBUAT GRUP
-            }
+        if ($type == "search") {
+            echo "<h2>CARI GRUP</h2>";
+        } else {
+            echo "<h2>GRUPMU</h2>";
+        }
 
-            if($type == "search"){
-                echo "<h2>CARI GRUP</h2>";
-            } else {
-                echo "<h2>GRUPMU</h2>";
-            }
+        if ($isDosen && $type == "list") echo '<a href="insertgrup.php"><button>BUAT GRUP</button></a>';
 
-            if ($isDosen && $type == "list") echo '<a href="insertgrup.php"><button>BUAT GRUP</button></a>';
-
-            echo //pagging
-            "<div class='paging'>
+        echo //pagging
+        "<div class='paging'>
                 <form method='get' action='tampilangrup.php'>
                     Per Page
                     <select name='" . $type . "' onchange='this.form.submit()'>
@@ -82,40 +81,39 @@
                     </select>
                 </form>";
 
-                $totalpage = ceil($jumlahData / $perpage);
+        $totalpage = ceil($jumlahData / $perpage);
 
-                echo "<a href='tampilangrup.php?p=1&$type=$perpage'>First</a> ";
-                if ($p == 1) {
-                    echo "Prev ";
-                } else {
-                    $x = $p - 1;
-                    echo "<a href='tampilangrup.php?p=$x&$type=$perpage'>Prev</a> ";
-                }
+        echo "<a href='tampilangrup.php?p=1&$type=$perpage'>First</a> ";
+        if ($p == 1) {
+            echo "Prev ";
+        } else {
+            $x = $p - 1;
+            echo "<a href='tampilangrup.php?p=$x&$type=$perpage'>Prev</a> ";
+        }
 
-                for ($i = 1; $i <= $totalpage; $i++) {
-                    echo "<a href='tampilangrup.php?p=$i&$type=$perpage'>$i</a> ";
-                }
+        for ($i = 1; $i <= $totalpage; $i++) {
+            echo "<a href='tampilangrup.php?p=$i&$type=$perpage'>$i</a> ";
+        }
 
-                if ($p == $totalpage) {
-                    echo "Next ";
-                } else {
-                    $x = $p + 1;
-                    echo "<a href='tampilangrup.php?p=$x&$type=$perpage'>Next</a> ";
-                }
+        if ($p == $totalpage) {
+            echo "Next ";
+        } else {
+            $x = $p + 1;
+            echo "<a href='tampilangrup.php?p=$x&$type=$perpage'>Next</a> ";
+        }
 
-                echo "<a href='tampilangrup.php?p=$totalpage&$type=$perpage'>Last</a><br><br><br>";
+        echo "<a href='tampilangrup.php?p=$totalpage&$type=$perpage'>Last</a><br><br><br>";
 
-            echo"</div>";
+        echo "</div>";
         ?>
     </div>
 
 
     <div class="styleGrup">
-        <?php while($grup = $result->fetch_assoc()) {
-            if ($_SESSION['username'] == $grup['username_pembuat']){
+        <?php while ($grup = $result->fetch_assoc()) {
+            if ($_SESSION['username'] == $grup['username_pembuat']) {
                 echo '<div class="grup" style="background: rgba(75, 75, 75, 0.9);">';
-            }
-            else {
+            } else {
                 echo '<div class="grup" >';
             }
 
@@ -124,44 +122,37 @@
                     <img src="https://w7.pngwing.com/pngs/288/840/png-transparent-computer-icons-user-crowd-social-group-others-miscellaneous-monochrome-social-group-thumbnail.png" alt="Profile Grup">
                 </div>
                 <div class="grupDesc">
-                    <h2>'.$grup['nama'].'</h2>
-                    <p>'.$grup['deskripsi'].'</p>
+                    <h2>' . $grup['nama'] . '</h2>
+                    <p>' . $grup['deskripsi'] . '</p>
                     <div class="infoGrup">
-                        <p>Dibuat oleh : '.$grup['namaPembuat'].'</p> 
-                        <p>Dibuat pada : '.$grup['tanggal_pembentukan'].'</p> ';
-
-
-            echo'   </div>
-                    <a href="detilgrup.php?id='.$grup['idgrup'].'"><button>Lihat Detail</button></a>
+                        <p>Dibuat oleh : ' . $grup['namaPembuat'] . '</p> 
+                        <p>Dibuat pada : ' . $grup['tanggal_pembentukan'] . '</p>
+                    </div>
+                    <a href="detilgrup.php?id=' . $grup['idgrup'] . '"><button>Lihat Detail</button></a>
                     ';
 
-                    if ($grup['anggota'] != NULL) {
-                        if ($_SESSION['username'] == $grup['username_pembuat']) {
-                            echo '<a href="delgrup.php?id='.$grup['idgrup'].' ">
+            if (isset($grup['anggota']) && $grup['anggota'] != NULL) {
+                if ($_SESSION['username'] == $grup['username_pembuat']) {
+                    echo '<a href="delgrup.php?id=' . $grup['idgrup'] . ' ">
                                     <button style="color:red;" onclick="return confirm(\'Yakin membubarkan grup ini?\');">Bubarkan Grup</button>
                                 </a>';
-                        }else {
-                            echo '<a href="delgrup.php?id='.$grup['idgrup'].'&user='.$_SESSION['username'].' ">
+                } else {
+                    echo '<a href="delgrup.php?id=' . $grup['idgrup'] . '&user=' . $_SESSION['username'] . ' ">
                                     <button style="color:red;" onclick="return confirm(\'Yakin keluar grup ini?\');">Keluar Grup</button>
                             </a>';
-
-                        }
-                    }
-                    else {
-                        echo '<a href="joingrup.php?id='.$grup['idgrup'].'&namaGrup='.$grup['nama'].'"> ">
+                }
+            } else {
+                echo '<a href="joingrup.php?id=' . $grup['idgrup'] . '&namaGrup=' . $grup['nama'] . '">
                             <button style="color:red;">Join Grup</button>
                         </a>';
-                            
-                    }
-
+            }
 
             echo '
                 </div>
             </div>
             ';
-
         } ?>
-        
+
     </div>
 
 </body>

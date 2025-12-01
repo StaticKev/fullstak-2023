@@ -75,7 +75,7 @@ $kode = $info['kode_pendaftaran'];
                         <th colspan="2">Event</th>
                     </tr>
                     <tr>
-                        <th colspan="2"><a href="insertevent.php">Tambah Event</a></th>
+                        <th colspan="2"><a style="color:green;" href="insertevent.php">Tambah Event</a></th>
                     </tr>
                     <!-- diloop berdasarkan data event -->
                     <?php
@@ -96,9 +96,9 @@ $kode = $info['kode_pendaftaran'];
                                     </div>
                                 </td>
 
-                                <td>
+                                <td style="width: 1rem;">
                                     <a href="editevent.php?id=' . $event['idevent'] . '">
-                                        <button>Detail Event</button>
+                                        Edit
                                     </a>
                                 </td>
                             </tr>';
