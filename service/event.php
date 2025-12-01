@@ -9,11 +9,22 @@ class event extends connection
         parent::__construct();
     }
 
-    public function getGrupEvent($pIdGrup = 0)
+    public function getGrupEvent($pIdGrup)
     {
         $sql = "SELECT * FROM event WHERE idgrup = ?";
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("i", $pIdGrup);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result;
+    }
+    
+    public function getEventDetail($pIdEvent)
+    {
+        $sql = "SELECT * FROM event WHERE idevent = ?";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("i", $pIdEvent);
         $stmt->execute();
         $result = $stmt->get_result();
 

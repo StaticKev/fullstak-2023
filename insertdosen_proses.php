@@ -1,3 +1,7 @@
+<?php
+	session_start();
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -51,7 +55,7 @@
 		$nrp_mahasiswa = NULL;
 		$npk_dosen = $npk;
 		$isadmin = 0;
-		$objAkun->insertAkun($username, $hashed_password, $nrp_mahasiswa, $npk_dosen, $isadmin);
+		$stmtAkun = $objAkun->insertAkun($username, $hashed_password, $nrp_mahasiswa, $npk_dosen, $isadmin);
 
 		?>
 
@@ -62,7 +66,7 @@
 		if ($stmtAkun) {
 			echo "<p class='success'>Akun dosen <b>$nama</b> berhasil ditambahkan.</p>";
 		} else {
-			echo "<p class='error'>Gagal insert akun: " . $con->error . "</p>";
+			echo "<p class='error'>Gagal insert akun: </p>";
 		}
 	} 
 	else {

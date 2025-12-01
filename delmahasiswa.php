@@ -7,11 +7,7 @@
     $nrp = $_GET['nrp'];
     $username = "M".$nrp;
     
-    $sqlNama = "SELECT nama, foto_extention FROM mahasiswa WHERE nrp=?";
-    $stmt = $con->prepare($sqlNama);
-    $stmt->bind_param("s", $nrp);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $result = $objMahasiswa->getAllMahasiswa($nrp);
 
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
