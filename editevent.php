@@ -1,10 +1,8 @@
 <?php
     session_start();
     include_once('service/event.php'); 
-    include_once('service/grup.php'); 
 
     $objEvent = new event();
-    $objGrup = new grup(); 
 
     if (!isset($_SESSION['login'])) {
         header("Location: login_temp.php"); 
@@ -12,56 +10,33 @@
     } elseif (($_SESSION['username'][0] === 'D') == false) {
         header("Location: index.php"); 
         exit();
-    }
-    
-    $idevent = null;
-    $dataEvent = null;
-    $message = '';
-    
-    $jenis_event_options = ['Workshop', 'Seminar', 'Webinar', 'Lainnya']; 
-
-    // 1. Ambil ID Event dari URL
-    if (isset($_GET['id'])) {
-        $idevent = $_GET['id'];
-        // Ambil data event yang akan diedit
-        $dataEvent = $objEvent->getEventById($idevent); 
-        
-        if (!$dataEvent) {
-            // Event tidak ditemukan
-            echo "<script>alert('Event tidak ditemukan!'); window.location.href = 'index.php';</script>";
-            exit();
-        }
-    } else if (isset($_POST['submit'])) {
-        $idevent = $_POST['txtidevent'];
-        $dataEvent = $objEvent->getEventById($idevent); 
-
-    } else {
+    } elseif (!isset($_GET['id'])){
         header("Location: index.php"); 
         exit();
     }
+
+    if (isset($_GET['id'])){
+        $idevent = $_GET['id']? : 0;
     
-    $listGrup = $objGrup->getAllGrup(); 
+        $result = $objEvent->getEventDetail($idevent);
+        $dataEvent = $result->fetch_assoc();
+    }
+    $message ="";
+    
 
     if (isset($_POST['submit'])) {
-        if (
-            isset($_POST['txtidgrup']) && 
-            isset($_POST['txtjudul']) && 
-            isset($_POST['txttanggal']) && 
-            isset($_POST['txtketerangan']) && 
-            isset($_POST['rad_jenis'])
-        ) {
-            $idgrup = $_POST['txtidgrup'];
+            $idevent = $_POST['txtidevent'];
             $judul = $_POST['txtjudul'];
             $tanggal = $_POST['txttanggal'];
             $keterangan = $_POST['txtketerangan'];
             $jenis = $_POST['rad_jenis'];
-            $judul_slug = strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $judul));
+            $judul_slug = $_POST['txtslug'];
             
             $poster_extension_lama = $dataEvent['poster_extension'];
             $poster_extension_baru = $poster_extension_lama; 
 
             $upload_success = true;
-            $uploadDir = 'posters/'; 
+            $uploadDir = 'posters/event/'; 
             $temp_file_name = '';
 
             if (isset($_FILES['fileposter']) && $_FILES['fileposter']['error'] == 0) {
@@ -74,7 +49,7 @@
                 } else {
                     $poster_extension_baru = $ekstensi_file;
 
-                    $temp_file_name = "event_" . $idevent . "." . $poster_extension_baru;
+                    $temp_file_name = $idevent . "." . $poster_extension_baru;
                     $uploadPath = $uploadDir . $temp_file_name;
                     
                     if (!move_uploaded_file($_FILES['fileposter']['tmp_name'], $uploadPath)) {
@@ -83,7 +58,7 @@
                     } 
                     
                     if ($poster_extension_lama && $poster_extension_lama !== $poster_extension_baru) {
-                        $file_lama = $uploadDir . "event_" . $idevent . "." . $poster_extension_lama;
+                        $file_lama = $uploadDir . $idevent . "." . $poster_extension_lama;
                         if (file_exists($file_lama)) {
                             unlink($file_lama);
                         }
@@ -98,7 +73,6 @@
             if ($upload_success) {
                 if($objEvent->updateEvent(
                     $idevent,
-                    $idgrup,
                     $judul,
                     $judul_slug,
                     $tanggal,
@@ -120,9 +94,6 @@
                     }
                 }
             }
-        } else {
-            $message = "<div class='error'>Mohon lengkapi semua field yang diperlukan.</div>";
-        }
     }
 ?>
 
@@ -181,25 +152,8 @@
             <?php echo $message; ?>
             
             <form method="post" action="editevent.php" enctype="multipart/form-data" onsubmit="return validateForm()">
-                <input type="hidden" name="txtidevent" value="<?php echo htmlspecialchars($idevent); ?>">
+                <input type="hidden" name="txtidevent" value="<?php $idevent; ?>">
                 
-                <div>
-                    <label for="idgrup">Pilih Grup:</label>
-                    <select id="idgrup" name="txtidgrup" required>
-                        <option value="">-- Pilih Grup --</option>
-                        <?php 
-                        if (is_array($listGrup) && count($listGrup) > 0) {
-                            foreach ($listGrup as $grup) {
-                                $selected = ($grup['idgrup'] == $dataEvent['idgrup']) ? 'selected' : '';
-                                echo "<option value='{$grup['idgrup']}' {$selected}>" . htmlspecialchars($grup['namagrup']) . "</option>";
-                            }
-                        } else {
-                            echo "<option value='' disabled>Tidak ada Grup tersedia</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-
                 <div>
                     <label for="judul">Judul Event:</label>
                     <input type="text" id="judul" name="txtjudul" maxlength="45" required 
@@ -220,15 +174,11 @@
                     <textarea id="keterangan" name="txtketerangan" rows="5" required><?php echo htmlspecialchars($dataEvent['keterangan']); ?></textarea>
                 </div>
 
-                <label>Jenis Event:</label>
+                <label>Jenis:</label>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <?php 
-                    foreach ($jenis_event_options as $jenis_opt) {
-                        $checked = ($jenis_opt == $dataEvent['jenis']) ? 'checked' : '';
-                        echo "<label><input type='radio' name='rad_jenis' value='{$jenis_opt}' {$checked} required> {$jenis_opt}</label>";
-                    }
-                    ?>
-                </div>
+					<label><input type="radio" name="rad_jenis" value="Privat" <?php echo ($dataEvent['jenis'] == 'Privat') ? 'checked' : ''; ?>> Privat</label>
+					<label><input type="radio" name="rad_jenis" value="Publik" <?php echo ($dataEvent['jenis'] == 'Publik') ? 'checked' : ''; ?>> Publik</label>
+				</div>
 
                 <div>
                     <label for="fileposter">Poster Event (Biarkan kosong jika tidak ingin mengubah):</label>

@@ -94,7 +94,7 @@ class grup extends connection
         return $result;
     }
 
-    public function getGrupLimit($offset = 0, $limit = 0, $pUser)
+    public function getGrupLimit($pUser, $offset = 0, $limit = 0)
     {
             $sql = 
             "SELECT (SELECT d.nama
