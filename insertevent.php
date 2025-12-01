@@ -1,10 +1,8 @@
 <?php
     session_start();
     include_once('service/event.php'); 
-    include_once('service/grup.php'); 
 
     $objEvent = new event();
-    $objGrup = new grup(); 
 
     if (!isset($_SESSION['login'])) {
         header("Location: login_temp.php"); 
@@ -14,17 +12,8 @@
         exit();
     }
     
-    $listGrup = $objGrup->getAllGrup(); 
-
     $message = '';
     if (isset($_POST['submit'])) {
-        if (
-            isset($_POST['txtidgrup']) && 
-            isset($_POST['txtjudul']) && 
-            isset($_POST['txttanggal']) && 
-            isset($_POST['txtketerangan']) && 
-            isset($_POST['rad_jenis'])
-        ) {
             $idgrup = $_POST['txtidgrup'];
             $judul = $_POST['txtjudul'];
             $tanggal = $_POST['txttanggal'];
@@ -59,7 +48,7 @@
             }
 
             if ($upload_success) {
-                if($objEvent->createEvent(
+                if($objEvent->insertEvent(
                     $idgrup,
                     $judul,
                     $judul_slug,
@@ -81,11 +70,7 @@
                     $message = "<div class='error'>Event gagal dibuat! Terjadi kesalahan database.</div>";
                 }
             }
-        } else {
-            $message = "<div class='error'>Mohon lengkapi semua field yang diperlukan.</div>";
-        }
     }
-    $jenis_event_options = ['Workshop', 'Seminar', 'Webinar', 'Lainnya']; 
     
     $tglDefault = date("Y-m-d\TH:i");
 ?>
@@ -127,23 +112,8 @@
             <?php echo $message; ?>
             
             <form method="post" action="insertevent.php" enctype="multipart/form-data" onsubmit="return validateForm()">
-                <div>
-                    <label for="idgrup">Pilih Grup:</label>
-                    <select id="idgrup" name="txtidgrup" required 
-                        style="width: 100%; padding: 10px; border-radius: 10px; border: none; background: #2e2e2e; color: #fff; box-sizing: border-box; font-size: 15px;">
-                        <option value="">-- Pilih Grup --</option>
-                        <?php 
-                        if (is_array($listGrup) && count($listGrup) > 0) {
-                            foreach ($listGrup as $grup) {
-                                echo "<option value='{$grup['idgrup']}'>{$grup['namagrup']}</option>";
-                            }
-                        } else {
-                            echo "<option value='' disabled>Tidak ada Grup tersedia</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-
+                <input type="hidden" name="txtidevent" value="<?php echo $_GET['id']; ?>">
+                
                 <div>
                     <label for="judul">Judul Event:</label>
                     <input type="text" id="judul" name="txtjudul" maxlength="45" required>
@@ -159,14 +129,11 @@
                     <textarea id="keterangan" name="txtketerangan" rows="5" required></textarea>
                 </div>
 
-                <label>Jenis Event:</label>
+                <label>Jenis:</label>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <?php 
-                    foreach ($jenis_event_options as $jenis_opt) {
-                        echo "<label><input type='radio' name='rad_jenis' value='{$jenis_opt}' required> {$jenis_opt}</label>";
-                    }
-                    ?>
-                </div>
+					<label><input type="radio" name="rad_jenis" value="Privat" > Privat</label>
+					<label><input type="radio" name="rad_jenis" value="Publik" > Publik</label>
+				</div>
 
                 <div>
                     <label for="fileposter">Poster Event (Max 4MB):</label>
@@ -176,23 +143,17 @@
                 <input type="submit" name="submit" value="Insert Event">
             </form>
 
-            <a href="tampilan_eventmu.php">⬅ Kembali ke Eventmu</a>
+            <a href="detilgrup.php?id=<?= $_GET['id'] ?>">⬅ Kembali</a>
         </div>
     </div>
 
     <script>
     function validateForm() {
-        const idGrup = document.getElementById('idgrup').value;
         const judul = document.getElementById('judul').value;
         const tanggal = document.getElementById('tanggal').value;
         const keterangan = document.getElementById('keterangan').value;
         const jenis = document.querySelector('input[name="rad_jenis"]:checked');
         const filePoster = document.getElementById('fileposter').value;
-
-        if (idGrup === "") {
-            alert("Harap pilih Grup!");
-            return false;
-        }
 
         if (judul.trim() === "") {
             alert("Judul Event tidak boleh kosong!");
